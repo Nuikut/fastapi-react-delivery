@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS client, staff, orders, restaurant, meal, meal_orders;
+DROP TABLE IF EXISTS client, staff, orders, restaurant, meal, meal_order;
 
 CREATE TABLE client(
 	username VARCHAR(20) PRIMARY KEY,
@@ -8,7 +8,9 @@ CREATE TABLE client(
 
 CREATE TABLE restaurant(
 	address VARCHAR (30) PRIMARY KEY,
-	category VARCHAR(20)
+	category VARCHAR(20),
+	manager_login VARCHAR(20) NOT NULL,
+	manager_password VARCHAR(60) NOT NULL
 );
 
 CREATE TABLE staff(
@@ -42,6 +44,7 @@ CREATE TABLE meal(
 CREATE TABLE meal_order(
 	name VARCHAR(20),
 	id INT8,
+	quantity INT,
 	FOREIGN KEY(name) REFERENCES meal(name),
 	FOREIGN KEY(id) REFERENCES orders(id)
 );
