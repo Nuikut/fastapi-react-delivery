@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from db import create_user, validate_user, validate_manager, get_menu
+from routers import login_router, info_router
 
 app = FastAPI()
 
@@ -9,6 +9,7 @@ origins = [
     'http://localhost:3000'
 ]
 
+# noinspection PyTypeChecker
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -17,25 +18,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.post("/login")
-async def login(username: str, password: str) -> dict:
-    return validate_user(username=username, password=password)
-
-
-@app.post("/register")
-async def register_user(username: str, password: str) -> dict:
-    return create_user(username=username, password=password)
-
-
-@app.post("/manager")
-async def login_manager(username: str, password: str) -> dict:
-    return validate_manager(login=username, password=password)
-
-
-@app.get("/menu")
-async def menu(restaurant: str):
-    return get_menu(restaurant=restaurant)
+app.include_router(login_router)
+app.include_router(info_router)
 
 
 if __name__ == '__main__':

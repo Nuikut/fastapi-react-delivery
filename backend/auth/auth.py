@@ -6,8 +6,8 @@ private_key_path = Path(__file__).parent / "certs" / "private.pem"
 public_key_path = Path(__file__).parent / "certs" / "public.pem"
 
 
-def encode_jwt(data, private_key=private_key_path.read_text(), algorithm="RS256"):
-    encoded = jwt.encode({"sub": data[0], "username": data[1]}, private_key, algorithm=algorithm)
+def encode_jwt(login:str, private_key=private_key_path.read_text(), algorithm="RS256"):
+    encoded = jwt.encode({"sub": login}, private_key, algorithm=algorithm)
     return encoded
 
 
