@@ -21,6 +21,5 @@ app.add_middleware(
 app.include_router(login_router)
 app.include_router(info_router)
 
-
 if __name__ == '__main__':
     uvicorn.run(app)

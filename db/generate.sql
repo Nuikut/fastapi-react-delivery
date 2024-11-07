@@ -15,15 +15,15 @@ CREATE TABLE restaurant(
 
 CREATE TABLE staff(
 	login VARCHAR(20) PRIMARY KEY,
-	passwrod VARCHAR(60) NOT NULL,
+	password VARCHAR(60) NOT NULL,
 	active BOOLEAN NOT NULL,
 	restaurant VARCHAR(50) REFERENCES restaurant(address)
 );
 
 CREATE TABLE orders(
-	id INT8 PRIMARY KEY,
+	id SERIAL PRIMARY KEY,
 	time TIMESTAMP,
-	total_price MONEY,
+	total_price INT,
 	active BOOLEAN,
 	rating SMALLINT,
 	client VARCHAR(20) REFERENCES client(login),
@@ -35,14 +35,14 @@ CREATE TABLE meal(
 	name VARCHAR(40) PRIMARY KEY,
 	description VARCHAR(200),
 	image PATH,
-	price MONEY,
+	price INT,
 	category VARCHAR(20),
 	available BOOLEAN,
 	restaurant VARCHAR(50) REFERENCES restaurant(address)
 );
 
 CREATE TABLE meal_order(
-	id INT8,
+	id INT,
 	name VARCHAR(40),
 	quantity INT,
 	FOREIGN KEY(name) REFERENCES meal(name),
