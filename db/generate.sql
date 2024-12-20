@@ -48,3 +48,10 @@ CREATE TABLE meal_order(
 	FOREIGN KEY(name) REFERENCES meal(name),
 	FOREIGN KEY(id) REFERENCES orders(id)
 );
+
+
+CREATE TABLE cart(
+	login VARCHAR(20) PRIMARY KEY,
+	meal VARCHAR(40) REFERENCES meal(name),
+	quantity INT
+);

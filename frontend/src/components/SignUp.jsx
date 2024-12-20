@@ -16,10 +16,7 @@ export default function SignUp() {
 
         switch (status) {
             case 'Fail':
-                setError('Invalid login credentials');
-                break;
-            case 'Blocked':
-                setError('This account has been blocked');
+                setError('Username taken');
                 break;
             default:
                 setError('');
@@ -29,7 +26,7 @@ export default function SignUp() {
 
     return (
         <div className="SignUp">
-            <h1>Login</h1>
+            <h1>SignUp</h1>
 
             <form onSubmit={signUpHandler}>
                 <input

@@ -10,22 +10,22 @@ login_router = APIRouter(
 
 
 @login_router.post("/login")
-async def login_client(user: Client) -> dict:
+async def login_client(user: Client) -> str:
     return validate_user(login=user.login, password=user.password, type="client")
 
 
 @login_router.post("/register")
-async def register_client(user: Client) -> dict:
+async def register_client(user: Client) -> str:
     return create_user(login=user.login, password=user.password)
 
 
 @login_router.post("/staff")
-async def login_staff(staff: Staff) -> dict:
+async def login_staff(staff: Staff) -> str:
     return validate_user(login=staff.login, password=staff.password, type="staff")
 
 
 @login_router.post("/manager")
-async def login_manager(manager: Manager) -> dict:
+async def login_manager(manager: Manager) -> str:
     return validate_manager(login=manager.login, password=manager.password, restaurant=manager.restaurant)
 
 
