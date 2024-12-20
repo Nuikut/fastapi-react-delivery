@@ -1,40 +1,34 @@
-import { useState, useEffect } from "react";
-import { getRestaurants } from "../api/restaurants";
-import { useNavigate } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
 import {validateToken} from "../api/auth";
-
+import {jwtDecode} from 'jwt-decode'
+import Header from "../components/Header";
 
 export default function Profile() {
-    const [restaurants, setRestaurants] = useState([]);
     const navigate = useNavigate();
+    const [username, setUsername] = useState('');
 
-
-    useEffect(() => { //TODO: подумать о валидации на фронте
+    useEffect(() => {
         const checkToken = async () => {
-            const token = localStorage.getItem("access_token");
+            const token = localStorage.getItem('access_token');
+
             const isValid = await validateToken(token);
 
-            if (!isValid) {
+            if (!isValid)
                 navigate("/login");
-            } else {
-                const loadRestaurants = async () => {
-                    const data = await getRestaurants();
-                    setRestaurants(data);
-                };
-                await loadRestaurants();
-            }
+
+            const decoded = jwtDecode(token);
+            if (decoded.iat + 900 < Math.floor(Date.now() / 1000))
+                navigate("/login");
+            if (decoded.sub)
+                setUsername(decoded.sub);
         };
         checkToken();
     }, [navigate]);
 
-    const listItems = restaurants.map((restaurant, index) => (
-        <li key={index}>{restaurant}</li>
-    ));
-
-    return (
-        <div className="Restaurants">
-            <h1>Restaurants</h1>
-            <ul>{listItems}</ul>
+    return(
+        <div className="Profile">
+            <Header name={username}></Header>
         </div>
-    );
+    )
 }

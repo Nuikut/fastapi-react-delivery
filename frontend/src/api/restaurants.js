@@ -6,7 +6,18 @@ export async function getRestaurants() {
         },
     })
 
+    return JSON.parse(await response.json());
+}
+
+export async function getMenu(restaurant) {
+    const response = await fetch(`http://127.0.0.1:8000/menu?restaurant=${restaurant}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+
     const data = await response.json();
 
-    return data['restaurants'];
+    return data['menu'];
 }

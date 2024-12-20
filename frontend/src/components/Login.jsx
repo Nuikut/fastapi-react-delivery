@@ -13,7 +13,6 @@ export default function Login() {
         e.preventDefault();
 
         const status = await loginUser(login, password);
-
         switch (status) {
             case 'Fail':
                 setError('Invalid login credentials');

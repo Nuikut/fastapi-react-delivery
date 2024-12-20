@@ -1,8 +1,9 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import './App.css';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import Profile from "./components/Profile";
+import Main from "./components/Main";
+import Menu from "./components/Menu";
 
 // TODO: Отовсрать фронт
 // TODO: CSS
@@ -13,7 +14,8 @@ function App() {
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/signup" element={<SignUp/>}/>
                 <Route path="/profile" element={<Profile/>}/>
-                <Route path="*" element={<Navigate to={'/profile'}/> }></Route>
+                <Route path="/menu" element={<Main/>}/>
+                <Route path="*" element={<Navigate to={'/menu'}/> }></Route>
         </Routes>
       </div>
   );

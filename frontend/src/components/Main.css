@@ -1,0 +1,89 @@
+.cart {
+    display: flex;
+    align-items: center;
+}
+
+.cart img {
+    width: 50px;
+    margin-right: 5px;
+}
+
+.cart a {
+    text-decoration: none;
+}
+
+.restaurantButton {
+    display: flex;
+    align-items: center;
+}
+
+.restaurantButton span {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.restaurantButton button {
+    margin: 0 25px;
+    background-color: #ff7f50;
+    border: 2px solid #ff6a33;
+    border-radius: 30px;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 8px 26px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    box-sizing: border-box;
+}
+
+.restaurantButton button:active {
+    transform: scale(0.98);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.restaurantListContainer {
+    width: 330px;
+    margin-left: auto;
+    margin-right: 0;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    height: calc(100vh - 20px);
+    box-sizing: border-box;
+}
+
+.restaurantListItem {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.restaurantAddress {
+    padding: 8px 10px;
+    background-color: #fff;
+    margin-bottom: 5px;
+    border: 1px solid #ddd;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+.restaurantAddress:hover {
+    background-color: #ff7f50;
+    cursor: pointer;
+}
+
+.menu {
+
+}
