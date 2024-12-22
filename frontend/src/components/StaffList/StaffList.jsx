@@ -5,7 +5,7 @@ export default function StaffList({staffArray, setStaffArray}) {
 
     const deactivate =  async (login) => {
 
-        const result = await deactivateStaff(login);
+        const result = await deactivateStaff(login); //TODO:Handle errors
 
         setStaffArray(prevState =>
             prevState.map(staff =>

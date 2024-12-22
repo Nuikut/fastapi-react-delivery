@@ -3,7 +3,7 @@ import {validateToken} from "../../api/auth";
 import {jwtDecode} from "jwt-decode";
 import {useNavigate} from "react-router-dom";
 import {getStaff} from "../../api/admin";
-import './Admin.css'
+import './Admin.css';
 import StaffList from "../StaffList/StaffList";
 import RestaurantsList from "../RestaurantsList/RestaurantsList";
 import {getRestaurants} from "../../api/restaurants";

@@ -3,6 +3,7 @@ import {getRestaurants} from "../../api/restaurants";
 import Header from "../Header/Header";
 import {Link} from "react-router-dom";
 import './Main.css'
+import Menu from "../Menu";
 
 
 function getUserRestaurant() {
@@ -12,7 +13,7 @@ function getUserRestaurant() {
 
 export default function RestaurantPage() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+    const [cart, setCart] = useState([]);
     const [restaurants, setRestaurants] = useState([]);
 
     useEffect(() => {
@@ -27,6 +28,10 @@ export default function RestaurantPage() {
 
         fetchRestaurants();
     }, []);
+
+    const handleCartUpdate = (data) => {
+        setCart(data);
+    };
 
     const toggleMenu = () => {
         setIsMenuOpen(prevState => !prevState);
@@ -61,7 +66,7 @@ export default function RestaurantPage() {
                     <div className="cart">
                         <Link to="/cart">
                             <img src="/cart.svg" alt="Корзина"/>
-                            <span>0</span>
+                            <span>{cart.length}</span>
                         </Link>
                     </div>
                 </div>
@@ -69,6 +74,7 @@ export default function RestaurantPage() {
             <div>
                 {isMenuOpen && <RestaurantList></RestaurantList>}
             </div>
+            <Menu onSendData={handleCartUpdate}></Menu>
         </div>
     );
 };

@@ -1,5 +1,7 @@
+const API_URL = process.env.REACT_APP_API_URL;
+
 export async function loginAdmin(login, password) {
-    const response = await fetch('http://localhost:8000/admin/login', {
+    const response = await fetch(`${API_URL}/admin/login`, {
         method: 'POST',
         headers: {
             'accept': 'application/json',
@@ -19,7 +21,7 @@ export async function loginAdmin(login, password) {
 
 
 export async function getStaff() {
-    const response = await fetch('http://localhost:8000/admin/staff', {
+    const response = await fetch(`${API_URL}/admin/staff`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
@@ -31,7 +33,7 @@ export async function getStaff() {
 }
 
 export async function deactivateStaff(login) {
-    const response = await fetch('http://localhost:8000/admin/staff', {
+    const response = await fetch(`${API_URL}/admin/staff`, {
         method: 'PATCH',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
@@ -46,7 +48,7 @@ export async function deactivateStaff(login) {
 
 
 export async function createStaff(login, password, restaurant) {
-    const response = await fetch('http://localhost:8000/admin/staff', {
+    const response = await fetch(`${API_URL}/admin/staff`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
@@ -60,7 +62,7 @@ export async function createStaff(login, password, restaurant) {
 }
 
 export async function createRestaurant(address, category, login, password) {
-    const response = await fetch('http://localhost:8000/admin/restaurant', {
+    const response = await fetch(`${API_URL}/admin/restaurant`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,

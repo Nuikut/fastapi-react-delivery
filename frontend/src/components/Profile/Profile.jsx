@@ -1,12 +1,15 @@
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {validateToken} from "../api/auth";
+import {validateToken} from "../../api/auth";
 import {jwtDecode} from 'jwt-decode'
-import Header from "./Header/Header";
+import Header from ".././Header/Header";
+import {getOrders} from "../../api/cart";
+
 
 export default function Profile() {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
+    const [orders, setOrders] = useState([]);
 
     useEffect(() => {
         const checkToken = async () => {
@@ -27,9 +30,28 @@ export default function Profile() {
         checkToken();
     }, [navigate]);
 
-    return(
+    const logout_user = async () => {
+        navigate('/menu');
+        localStorage.clear();
+    }
+
+    const loadOrders = async () => {
+        const data = await getOrders();
+
+        setOrders(data);
+        console.log(data);
+    }
+
+    return (
         <div className="Profile">
-            <Header name={username}></Header>
+            <Header name={username} children={
+                <div className="restaurantButton">
+                    <button onClick={() => (logout_user())}>Выйти</button>
+                </div>
+            }>
+            </Header>
+            <button className="GetData" onClick={() => loadOrders()}>Ya</button>
+            {/*<Cart></Cart>*/}
         </div>
     )
 }

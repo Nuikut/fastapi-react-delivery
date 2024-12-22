@@ -96,7 +96,7 @@ def make_order(total_price: int, client: str, staff: str, restaurant: str, cart:
             return json.dumps({"status": "Success"})
 
 
-def get_order(login: str) -> str:
+def get_active_orders(login: str) -> str: #TODO: rethink single order returning
     with conn.cursor() as cursor:
         order = list(cursor.execute('SELECT * FROM orders WHERE client = %s AND active = TRUE', [login]).fetchall())
         if not order:
@@ -105,6 +105,20 @@ def get_order(login: str) -> str:
         cart = dict()
         for item in meals:
             cart[item['name']] = item['quantity']
+        order.append(cart)
+        return json.dumps(order, default=str)
+
+
+def get_user_orders(login: str) -> str:
+    with conn.cursor() as cursor:
+        order = list(cursor.execute('SELECT * FROM orders WHERE client = %s', [login]).fetchall())
+        if not order:
+            return json.dumps({"status": "No user orders"})
+        for item in order:
+            meals = cursor.execute('SELECT * FROM meal_order WHERE id = %s', [item['id']]).fetchall()
+            cart = dict()
+            for meal in meals:
+                cart[meal['name']] = meal['quantity']
         order.append(cart)
         return json.dumps(order, default=str)
 

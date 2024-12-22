@@ -1,5 +1,7 @@
+const API_URL = process.env.REACT_APP_API_URL;
+
 export async function getRestaurants() {
-    const response = await fetch('http://localhost:8000/ordering/restaurants', {
+    const response = await fetch(`${API_URL}/ordering/restaurants`, {
         method: 'GET',
         headers: {
             'accept': 'application/json',
@@ -10,7 +12,7 @@ export async function getRestaurants() {
 }
 
 export async function getMenu(restaurant) {
-    const response = await fetch(`http://localhost:8000/ordering/menu?restaurant=${restaurant}`, {
+    const response = await fetch(`${API_URL}/ordering/menu?restaurant=${restaurant}`, {
         method: 'GET',
         headers: {
             'accept': 'application/json',

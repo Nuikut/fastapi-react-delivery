@@ -15,11 +15,11 @@ export default function AdminLogin() {
         const status = await loginAdmin(login, password);
         switch (status) {
             case 'Fail':
-                setError('Invalid login credentials');
+                setError('Неверный пароль');
                 break;
             default:
                 setError('');
-                navigate("/admin");
+                navigate("/root");
         }
     }
 

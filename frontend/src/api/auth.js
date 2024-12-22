@@ -1,5 +1,7 @@
+const API_URL = process.env.REACT_APP_API_URL;
+
 export async function loginUser(login, password) {
-    const response = await fetch('http://localhost:8000/auth/login', {
+    const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: {
             'accept': 'application/json',
@@ -19,7 +21,7 @@ export async function loginUser(login, password) {
 
 
 export async function registerUser(login, password) {
-    const response = await fetch('http://localhost:8000/auth/register', {
+    const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: {
             'accept': 'application/json',
@@ -34,7 +36,7 @@ export async function registerUser(login, password) {
 
 
 export async function validateToken(token){
-    const response = await fetch(`http://localhost:8000/auth/token?token=${token}`, {
+    const response = await fetch(`${API_URL}/auth/token?token=${token}`, {
         method: 'GET',
         headers: {
             'accept': 'application/json',

@@ -1,7 +1,7 @@
 from auth.auth import validate
 from fastapi import APIRouter, Depends
 from db import validate_user, create_user, validate_manager, get_menu, get_restaurants, validate_token, make_order, \
-    get_order, get_staff, admin, alter_staff, add_staff, create_restaurant
+    get_active_orders, get_staff, admin, alter_staff, add_staff, create_restaurant, get_user_orders
 from schemas import Client, createStaff, Staff, Order, Admin, login, Restaurant, restaurant
 
 login_router = APIRouter(
@@ -57,9 +57,12 @@ async def place_order(order: Order, token: str = Depends(validate)):
 
 
 @info_router.get("/order")
-async def order(login: str = None, token: str = Depends(validate)):
-    return get_order(login=login)
+async def get_active_order(login: login = None):
+    return get_active_orders(login=login.login)
 
+@info_router.get("/orders")
+async def get_user_order(login: login = None):
+    return get_user_orders(login=login.login)
 
 admin_router = APIRouter(
     prefix="/admin",

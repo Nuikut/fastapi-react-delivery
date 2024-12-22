@@ -242,3 +242,4 @@ fabric.properties
 backend/auth/certs/private.pem
 backend/auth/certs/public.pem
 /**/.pem
+*.tar
