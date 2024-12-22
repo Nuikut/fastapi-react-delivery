@@ -1,0 +1,47 @@
+.AdminHeader {
+    margin: 0;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    padding: 15px 0;
+    background-color: #700523;
+    color: white;
+    border-radius: 10px 10px 0 0;
+}
+
+.StaffList {
+    display: flex;
+}
+
+.RestaurantsList {
+    display: flex;
+}
+
+.restaurantsAddress {
+    font-size: 16px;
+    font-weight: bold;
+    width: 100%;
+    max-width: 1300px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+    cursor: pointer;
+}
+
+.restaurantsAddress:before {
+    content: "Адрес: ";
+    color: #888;
+}
+
+.adminButton {
+    margin-top: 2px;
+    font-size: 14px;
+    color: #555;
+}
+
+.adminButton:before {
+    content: "Статус: ";
+    font-weight: bold;
+    color: #888;
+}

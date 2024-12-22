@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
-import {getRestaurants} from "../api/restaurants";
-import Header from "../components/Header";
+import {getRestaurants} from "../../api/restaurants";
+import Header from "../Header/Header";
 import {Link} from "react-router-dom";
 import './Main.css'
 

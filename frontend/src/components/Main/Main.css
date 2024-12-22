@@ -84,6 +84,30 @@
     cursor: pointer;
 }
 
-.menu {
+.menu-card {
+    padding: 10px 20px;
+}
 
+.menu-items {
+    display: flex;
+    align-items: center;
+}
+
+.menu-card-title {
+    display: flex;
+    align-content: center;
+}
+
+.menu-card-description {
+    overflow: hidden;
+    white-space: wrap;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    box-sizing: border-box;
+}
+
+.menu-card-button {
+    margin-left: 20px;
+    padding: 20px;
+    border-radius: 50%;
 }

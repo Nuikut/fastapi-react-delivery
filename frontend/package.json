@@ -16,7 +16,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && tar -cvf build.tar build && scp -P 33333 build.tar nuikut@192.168.0.100:/home/nuikut && ssh nuikut@192.168.0.100 -p 33333",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

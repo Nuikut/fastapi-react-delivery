@@ -109,6 +109,57 @@ def get_order(login: str) -> str:
         return json.dumps(order, default=str)
 
 
+def admin(login: str, password: str) -> str:
+    admin_login = getenv("admin_login")
+    admin_password = getenv("admin_password")
+    if login == admin_login and bcrypt.checkpw(password=password.encode(), hashed_password=admin_password.encode()):
+        return json.dumps({"access_token": encode_jwt('admin')})
+    return json.dumps({"access_token": "Fail"})
+
+
+def get_staff() -> str:
+    with conn.cursor() as cursor:
+        staff = list(cursor.execute('SELECT * FROM staff').fetchall())
+        if not staff:
+            return json.dumps({"staff": "No staff"})
+        return json.dumps({"staff": staff})
+
+
+def alter_staff(login: str) -> str:
+    with conn.cursor() as cursor:
+        if cursor.execute('UPDATE staff SET active = not active WHERE login = %s', [login]).rowcount:
+            return json.dumps({"status": "Success"})
+        return json.dumps({"status": "Fail"})
+
+
+def add_staff(login: str, password: str, restaurant: str) -> str:
+    with conn.cursor() as cursor:
+        try:
+            if cursor.execute('INSERT INTO staff VALUES (%s, %s, TRUE, %s)',
+                              [login, bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(), restaurant]):
+                return json.dumps({"status": "Success"})
+        except psycopg.errors.ForeignKeyViolation:
+            return json.dumps({"status": "Не найден такой ресторан"})
+        except psycopg.errors.UniqueViolation:
+            return json.dumps({"status": "Такой менеджер уже существует"})
+    return json.dumps({"status": "Fail"})
+
+
+def create_restaurant(address: str, category: str, login: str, password: str):
+    with conn.cursor() as cursor:
+        try:
+            if cursor.execute('INSERT INTO restaurant VALUES (%s, %s, %s, %s)',
+                              [address, category, login, bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()]).rowcount:
+                return json.dumps({"status": "Success"})
+        except BaseException as e:
+            return json.dumps({"status": e})
+
+# def alter_restaurant(login: str) -> str:
+#     with conn.cursor() as cursor:
+#         if cursor.execute('UPDATE restaurant SET active = not active WHERE address = %s', [login]).rowcount:
+#             return json.dumps({"status": "Success"})
+#         return json.dumps({"status": "Fail"})
+
 def get_cart(login: str) -> dict:
     with conn.cursor() as cursor:
         pass

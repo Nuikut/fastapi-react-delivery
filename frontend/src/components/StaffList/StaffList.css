@@ -1,0 +1,57 @@
+.staffList {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.staffList li:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.staffBase {
+    display: flex;
+    gap: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fdfdfd;
+    transition: box-shadow 0.3s ease;
+}
+
+.staffLogin {
+    width: 100%;
+    max-width: 400px;
+    font-size: 16px;
+    font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+    cursor: pointer;
+}
+
+.staffLogin:before {
+    content: "Логин: ";
+    font-weight: bold;
+    color: #888;
+}
+
+.staffRestaurant {
+    font-size: 16px;
+    color: #555;
+    width: 100%;
+    max-width: 1300px;
+    font-weight: bold;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+    cursor: pointer;
+}
+
+.staffRestaurant:before {
+    content: "Ресторан: ";
+    font-weight: bold;
+    color: #888;
+}

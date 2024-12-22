@@ -16,6 +16,20 @@ class Client(BaseModel):
         }
     }
 
+class Admin(BaseModel):
+    login: str
+    password: str
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "login": "root",
+                    "password": "root",
+                }
+            ]
+        }
+    }
 
 class Staff(BaseModel):
     login: str
@@ -33,7 +47,7 @@ class Staff(BaseModel):
     }
 
 
-class Manager(BaseModel):
+class createStaff(BaseModel):
     login: str
     password: str
     restaurant: str
@@ -50,6 +64,8 @@ class Manager(BaseModel):
         }
     }
 
+class login(BaseModel):
+    login: str
 
 class Order(BaseModel):
     total_price: int
@@ -71,3 +87,25 @@ class Order(BaseModel):
             ]
         }
     }
+
+class Restaurant(BaseModel):
+    address: str
+    category: str
+    manager_login: str
+    manager_password: str
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "address": "124 Culinary Avenue, Flavor Town, CA 90210",
+                    "category": "Chinese",
+                    "manager_login": "manager",
+                    "manager_password": "manager"
+                }
+            ]
+        }
+    }
+
+
+class restaurant(BaseModel):
+    address: str

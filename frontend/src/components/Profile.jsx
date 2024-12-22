@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {validateToken} from "../api/auth";
 import {jwtDecode} from 'jwt-decode'
-import Header from "../components/Header";
+import Header from "./Header/Header";
 
 export default function Profile() {
     const navigate = useNavigate();
@@ -16,12 +16,13 @@ export default function Profile() {
 
             if (!isValid)
                 navigate("/login");
-
-            const decoded = jwtDecode(token);
-            if (decoded.iat + 900 < Math.floor(Date.now() / 1000))
-                navigate("/login");
-            if (decoded.sub)
-                setUsername(decoded.sub);
+            else {
+                const decoded = jwtDecode(token);
+                if (decoded.iat + 900 < Math.floor(Date.now() / 1000))
+                    navigate("/login");
+                if (decoded.sub)
+                    setUsername(decoded.sub);
+            }
         };
         checkToken();
     }, [navigate]);

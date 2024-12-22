@@ -1,0 +1,39 @@
+.restaurantsList {
+    padding: 0;
+    margin: 20px 0;
+}
+
+.restaurantsList li:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.restaurantsListItem {
+    list-style: none;
+    display: flex;
+    gap: 5px;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fdfdfd;
+    transition: box-shadow 0.3s ease;
+}
+
+.restaurantsCuisine {
+    font-weight: bold;
+    font-size: 16px;
+    color: #555;
+    width: 100%;
+    max-width: 400px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+    cursor: pointer;
+}
+
+.restaurantsCuisine:before {
+    content: "Кухня: ";
+    font-weight: bold;
+    color: #888;
+}

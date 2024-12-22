@@ -1,7 +1,8 @@
 export async function loginUser(login, password) {
-    const response = await fetch('http://127.0.0.1:8000/login', {
+    const response = await fetch('http://localhost:8000/auth/login', {
         method: 'POST',
         headers: {
+            'accept': 'application/json',
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({login: login, password: password})
@@ -18,9 +19,10 @@ export async function loginUser(login, password) {
 
 
 export async function registerUser(login, password) {
-    const response = await fetch('http://127.0.0.1:8000/register', {
+    const response = await fetch('http://localhost:8000/auth/register', {
         method: 'POST',
         headers: {
+            'accept': 'application/json',
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({login: login, password: password})
@@ -32,9 +34,10 @@ export async function registerUser(login, password) {
 
 
 export async function validateToken(token){
-    const response = await fetch(`http://127.0.0.1:8000/token?token=${token}`, {
+    const response = await fetch(`http://localhost:8000/auth/token?token=${token}`, {
         method: 'GET',
         headers: {
+            'accept': 'application/json',
             'Content-Type': 'application/json',
         }
     })

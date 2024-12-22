@@ -1,0 +1,47 @@
+.createStaff {
+
+}
+
+.form-group {
+    display: flex;
+}
+
+label {
+    font-weight: bold;
+}
+
+input,
+select {
+    width: 150px;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+input:focus,
+select:focus {
+    border-color: #75062a;
+    outline: none;
+}
+
+.submitButton {
+    padding: 10px 20px;
+    background-color: #75062a;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.submitButton:hover {
+    background-color: #75062a;
+}
+
+.error {
+    font-size: 16px;
+    font-weight: bold;
+    color: #4a0319;
+    margin-bottom: 15px;
+}
