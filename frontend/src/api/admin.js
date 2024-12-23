@@ -74,3 +74,17 @@ export async function createRestaurant(address, category, login, password) {
 
     return JSON.parse(await response.json())['status']
 }
+
+export async function deleteRestaurant(address) {
+    const response = await fetch(`${API_URL}/admin/restaurant`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
+            'accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({address: address})
+    })
+
+    return JSON.parse(await response.json())['status']
+}

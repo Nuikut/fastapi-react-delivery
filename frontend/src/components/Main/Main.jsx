@@ -13,7 +13,7 @@ function getUserRestaurant() {
 
 export default function RestaurantPage() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [cart, setCart] = useState([]);
+    const [cartLength, setCartLength] = useState(0);
     const [restaurants, setRestaurants] = useState([]);
 
     useEffect(() => {
@@ -30,7 +30,12 @@ export default function RestaurantPage() {
     }, []);
 
     const handleCartUpdate = (data) => {
-        setCart(data);
+        if (data && data.length > 0) {
+            const cartLen = data.reduce((currentSum, currentValue) => currentSum + currentValue.quantity, 0);
+            setCartLength(cartLen);
+        } else {
+            setCartLength(0);
+        }
     };
 
     const toggleMenu = () => {
@@ -48,10 +53,11 @@ export default function RestaurantPage() {
                 <h2>Наши места:</h2>
                 <ul className="restaurantListItem">
                     {restaurants.map((restaurant) => (
-                        <li className="restaurantListItem" >
-                            <li className='restaurantAddress' onClick={() => selectRestaurant(restaurant.address)}> {restaurant.address}<br/></li>
+                        <div className="restaurantListItem">
+                            <li className='restaurantAddress'
+                                onClick={() => selectRestaurant(restaurant.address)}> {restaurant.address}<br/></li>
                             <li className='restaurantCuisine'> {restaurant.category}</li>
-                        </li>
+                        </div>
                     ))}
                 </ul>
             </div>
@@ -66,7 +72,7 @@ export default function RestaurantPage() {
                     <div className="cart">
                         <Link to="/cart">
                             <img src="/cart.svg" alt="Корзина"/>
-                            <span>{cart.length}</span>
+                            <span>{cartLength}</span>
                         </Link>
                     </div>
                 </div>

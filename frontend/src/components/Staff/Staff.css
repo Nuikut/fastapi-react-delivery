@@ -1,0 +1,28 @@
+.StaffHeader {
+    display: flex;
+    background: rgba(0,119,255,0.33);
+    align-items: center;
+}
+
+.StaffUsername {
+    font-weight: bold;
+    font-size: large;
+    margin: 30px;
+}
+
+.Logout {
+    border: none;
+
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 40px;
+    min-height: 40px;
+    width: 70px;
+    height: 40px;
+}

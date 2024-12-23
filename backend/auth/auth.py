@@ -21,13 +21,13 @@ def decode_jwt(token: str, public_key=public_key_path.read_text(), algorithms=["
 oauth2_scheme = OAuth2PasswordBearer("/auth/login")
 def validate(token: str = Depends(oauth2_scheme)) -> str:
     try:
-        username = decode_jwt(token).get("sub")
-        if username is None:
+        iat = decode_jwt(token).get("iat")
+        if iat is None:
             raise status.HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Invalid authentication credentials"
+                detail="Invalid iat"
             )
-        return username
+        return iat
     except BaseException:
         raise status.HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

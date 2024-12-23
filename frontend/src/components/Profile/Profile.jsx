@@ -8,13 +8,12 @@ import {getOrders} from "../../api/cart";
 
 export default function Profile() {
     const navigate = useNavigate();
-    const [username, setUsername] = useState('');
     const [orders, setOrders] = useState([]);
+    const [username, setUsername] = useState('');
 
     useEffect(() => {
         const checkToken = async () => {
             const token = localStorage.getItem('access_token');
-
             const isValid = await validateToken(token);
 
             if (!isValid)
@@ -31,15 +30,13 @@ export default function Profile() {
     }, [navigate]);
 
     const logout_user = async () => {
-        navigate('/menu');
+        navigate('/main');
         localStorage.clear();
     }
 
     const loadOrders = async () => {
         const data = await getOrders();
-
         setOrders(data);
-        console.log(data);
     }
 
     return (
@@ -51,7 +48,7 @@ export default function Profile() {
             }>
             </Header>
             <button className="GetData" onClick={() => loadOrders()}>Ya</button>
-            {/*<Cart></Cart>*/}
+
         </div>
     )
 }

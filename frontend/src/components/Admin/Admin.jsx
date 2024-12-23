@@ -13,7 +13,6 @@ import CreateRestaurant from "../CreateRestaurant/CreateRestaurant";
 export default function Admin() {
     const navigate = useNavigate();
     const [staffArray, setStaffArray] = useState([]);
-    const [restaurantsArray, setRestaurantsArray] = useState([]);
 
     useEffect(() => {
         const checkToken = async () => {
@@ -24,10 +23,8 @@ export default function Admin() {
             if (!isValid)
                 navigate("/admin/login");
             else {
-                const staff = await getStaff()
-                setStaffArray(staff)
-                const res = await getRestaurants()
-                setRestaurantsArray(res)
+
+
                 const decoded = jwtDecode(token);
                 if (decoded.iat + 900 < Math.floor(Date.now() / 1000))
                     navigate("/admin/login");
@@ -42,8 +39,8 @@ export default function Admin() {
                 <p>Вы на админской панели</p>
             </div>
             <div className="data">
-                <StaffList staffArray={staffArray} setStaffArray={setStaffArray}></StaffList>
-                <RestaurantsList restaurants={restaurantsArray}></RestaurantsList>
+                <StaffList></StaffList>
+                <RestaurantsList></RestaurantsList>
                 <CreateStaff></CreateStaff>
                 <CreateRestaurant></CreateRestaurant>
             </div>

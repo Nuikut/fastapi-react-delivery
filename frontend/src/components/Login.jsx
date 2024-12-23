@@ -1,39 +1,52 @@
-import {useState} from 'react'
+import {useState} from 'react';
 import {loginUser} from "../api/auth";
+import {loginStaff} from "../api/auth";
 import {Link, useNavigate} from "react-router-dom";
 
-
-export default function Login() {
+export default function Login({type = "user"}) {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
-    const loginUserHandler = async (e) => {
-        e.preventDefault();
 
-        const status = await loginUser(login, password);
+    const loginHandler = async (e) => {
+        e.preventDefault();
+        let status;
+
+        if (type === "staff") {
+
+            status = await loginStaff(login, password);
+        } else {
+
+            status = await loginUser(login, password);
+        }
+
         switch (status) {
             case 'Fail':
-                setError('Invalid login credentials');
+                setError(type === "staff" ? 'Invalid employee credentials' : 'Invalid user credentials');
                 break;
             case 'Blocked':
-                setError('This account has been blocked');
+                setError(type === "staff" ? 'This staff account has been blocked' : 'This account has been blocked');
                 break;
             default:
                 setError('');
-                navigate("/profile");
+                if (type === "staff") {
+                    navigate("/staff");
+                } else {
+                    navigate("/profile");
+                }
         }
-    }
+    };
 
     return (
         <div className="Login">
-            <h1>Login</h1>
+            <h1>{type === "staff" ? "Staff Login" : "User Login"}</h1>
 
-            <form onSubmit={loginUserHandler}>
+            <form onSubmit={loginHandler}>
                 <input
                     type="text"
-                    placeholder="Username"
+                    placeholder={type === "staff" ? "Staff ID" : "Username"}
                     value={login}
                     onChange={(e) => setLogin(e.target.value)}
                     minLength={1}
@@ -51,11 +64,15 @@ export default function Login() {
                 <button type="submit">Log in</button>
                 {error && <div style={{color: 'red'}}>{error}</div>}
                 <div className="hints">
-                    <p className="hint">
-                        Don't have an account? <Link to="/signup">Sign up</Link>
-                    </p>
+                    {type === "staff" ? (
+                        <div></div>
+                    ) : (
+                        <p className="hint">
+                            Don't have an account? <Link to="/signup">Sign up</Link>
+                        </p>
+                    )}
                 </div>
             </form>
         </div>
-    )
+    );
 }

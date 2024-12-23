@@ -1,7 +1,8 @@
 from auth.auth import validate
 from fastapi import APIRouter, Depends
 from db import validate_user, create_user, validate_manager, get_menu, get_restaurants, validate_token, make_order, \
-    get_active_orders, get_staff, admin, alter_staff, add_staff, create_restaurant, get_user_orders
+    get_active_client_orders, get_staff, admin, alter_staff, add_staff, create_restaurant, get_all_user_orders, alter_restaurant, \
+    get_staff_active_orders
 from schemas import Client, createStaff, Staff, Order, Admin, login, Restaurant, restaurant
 
 login_router = APIRouter(
@@ -31,8 +32,8 @@ async def login_manager(manager: createStaff) -> str:
 
 
 @login_router.get("/token")
-async def check_token(token: str = None):
-    return validate_token(token=token)
+async def check_token(iat: str = Depends(validate)):
+    return validate_token(iat=iat)
 
 
 info_router = APIRouter(
@@ -57,12 +58,16 @@ async def place_order(order: Order, token: str = Depends(validate)):
 
 
 @info_router.get("/order")
-async def get_active_order(login: login = None):
-    return get_active_orders(login=login.login)
+async def get_active_client_order(login: str = None):
+    return get_active_client_orders(login=login)
 
 @info_router.get("/orders")
-async def get_user_order(login: login = None):
-    return get_user_orders(login=login.login)
+async def get_history_user_orders(login: str = None):
+    return get_all_user_orders(login=login)
+
+@info_router.get("/restaurant/orders")
+async def get_restaurant_active_orders(restaurant: str = None, login: str = None, token: str = Depends(validate)):
+    return get_staff_active_orders(restaurant=restaurant, staff=login)
 
 admin_router = APIRouter(
     prefix="/admin",
@@ -94,6 +99,6 @@ async def create_staff(staff: createStaff):
 async def add_restaurant(restaurant: Restaurant):
     return create_restaurant(address=restaurant.address, category=restaurant.category, login=restaurant.manager_login, password=restaurant.manager_password)
 
-# @admin_router.patch("/restaurant")
-# async def alter_restaurant_status(restaurant: restaurant):
-#     return alter_restaurant(login=login.login)
+@admin_router.delete("/restaurant")
+async def delete_restaurant(restaurant: restaurant):
+    return alter_restaurant(restaurant.address)

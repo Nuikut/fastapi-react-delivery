@@ -111,3 +111,19 @@
     padding: 20px;
     border-radius: 50%;
 }
+
+.restaurantListContainer {
+    position: absolute;
+    top: 67px;
+    right: 0;
+    left: auto;
+    z-index: 100;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    width: 50%;
+    height: auto;
+    min-height: 91%;
+    max-width: 390px;
+}

@@ -34,11 +34,32 @@ export async function registerUser(login, password) {
     return data;
 }
 
+export async function loginStaff(login, password) {
+    const response = await fetch(`${API_URL}/auth/staff`, {
+        method: 'POST',
+        headers: {
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({login: login, password: password})
+    })
+
+    const data = JSON.parse(await response.json())['access_token'];
+
+    if (response.ok) {
+        localStorage.setItem('staff_token', data);
+    }
+
+    return data;
+}
 
 export async function validateToken(token){
-    const response = await fetch(`${API_URL}/auth/token?token=${token}`, {
+    if (!token)
+        return false;
+    const response = await fetch(`${API_URL}/auth/token`, {
         method: 'GET',
         headers: {
+            'Authorization': `Bearer ${token}`,
             'accept': 'application/json',
             'Content-Type': 'application/json',
         }

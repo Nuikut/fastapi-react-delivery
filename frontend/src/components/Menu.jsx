@@ -1,10 +1,12 @@
 import {getMenu} from "../api/restaurants";
 import {useEffect, useState} from "react";
+import LoadingScreen from "./LoadingScreen/LoadingScreen";
 
 
-export default function Menu({onSendData})  {
+export default function Menu({onSendData}) {
+    const storedCart = localStorage.getItem('cart');
+    const [cart, setCart] = useState(storedCart ? JSON.parse(storedCart) : []);
     const [menu, setMenu] = useState([]);
-    const [cart, setCart] = useState([]);
     const restaurant = localStorage.getItem("userRestaurant");
 
     const fetchMenu = async (restaurant) => {
@@ -14,33 +16,46 @@ export default function Menu({onSendData})  {
 
     useEffect(() => {
         fetchMenu(restaurant);
-    }, [restaurant]);
+        onSendData(cart);
+    }, [restaurant, cart, onSendData]);
 
 
     const addToCart = (meal) => {
-        const updatedCart = [...cart, meal['name']];
+        const updatedCart = [...cart];
+        const existingItem = updatedCart.find(
+            (item) => item.name === meal.name && item.price === meal.price
+        );
+
+        if (existingItem)
+            existingItem.quantity += 1;
+        else
+           updatedCart.push({...meal, quantity: 1});
+
         setCart(updatedCart);
-        onSendData(cart);
+        onSendData(updatedCart);
+        localStorage.setItem('cart', JSON.stringify(updatedCart));
     };
 
     return (
         <div className="menu">
             <h2 className="menu-title">Меню</h2>
             <div className="menu-items">
-                {menu.map((meal) => (
+                {menu && menu.length > 0 ? (menu.map((meal) => (
                     <div className="menu-card">
-                        <img src={meal.image} alt={meal.name} className="menu-card-image" />
+                        <img src={meal.image} alt={meal.name} className="menu-card-image"/>
                         <div className="menu-card-content">
                             <h3 className="menu-card-title">{meal.name}</h3>
                             <p className="menu-card-description">{meal.description}</p>
                             <div className="menu-card-footer">
                                 <span className="menu-card-price">{meal.price}₽</span>
                                 <span className="menu-card-price">{meal.category}</span>
-                                <button className="menu-card-button" onClick={() => (addToCart(meal))}></button>
+                                <button className="menu-card-button" onClick={() => addToCart(meal)}></button>
                             </div>
                         </div>
                     </div>
-                ))}
+                )))
+                    : <LoadingScreen child={'Получаем меню...'}></LoadingScreen>
+                }
             </div>
         </div>
     );

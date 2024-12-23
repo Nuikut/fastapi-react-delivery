@@ -12,6 +12,9 @@ export async function getRestaurants() {
 }
 
 export async function getMenu(restaurant) {
+    if (!restaurant) {
+        return [];
+    }
     const response = await fetch(`${API_URL}/ordering/menu?restaurant=${restaurant}`, {
         method: 'GET',
         headers: {

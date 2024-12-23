@@ -61,10 +61,9 @@ def get_restaurants() -> str:
         return json.dumps(cursor.fetchall())
 
 
-def validate_token(token: str) -> str:
+def validate_token(iat: str) -> str:
     try:
-        data = decode_jwt(token=token)
-        if int(time()) - data['iat'] < 900:
+        if int(time()) - iat < 900:
             return json.dumps({"status": "Success"})
         return json.dumps({"status": "Expired"})
     except DecodeError:
@@ -96,7 +95,7 @@ def make_order(total_price: int, client: str, staff: str, restaurant: str, cart:
             return json.dumps({"status": "Success"})
 
 
-def get_active_orders(login: str) -> str: #TODO: rethink single order returning
+def get_active_client_orders(login: str) -> str: #TODO: rethink single order returning
     with conn.cursor() as cursor:
         order = list(cursor.execute('SELECT * FROM orders WHERE client = %s AND active = TRUE', [login]).fetchall())
         if not order:
@@ -109,7 +108,7 @@ def get_active_orders(login: str) -> str: #TODO: rethink single order returning
         return json.dumps(order, default=str)
 
 
-def get_user_orders(login: str) -> str:
+def get_all_user_orders(login: str) -> str:
     with conn.cursor() as cursor:
         order = list(cursor.execute('SELECT * FROM orders WHERE client = %s', [login]).fetchall())
         if not order:
@@ -158,6 +157,17 @@ def add_staff(login: str, password: str, restaurant: str) -> str:
             return json.dumps({"status": "Такой менеджер уже существует"})
     return json.dumps({"status": "Fail"})
 
+def get_staff_active_orders(restaurant:str, staff:str):
+    with conn.cursor() as cursor:
+        try:
+            cursor.execute('SELECT * FROM orders WHERE restaurant = %s AND staff = %s AND active = TRUE', [restaurant, staff])
+            orders = list(cursor.fetchall())
+            if not orders:
+                return json.dumps({"orders": "No active orders"})
+            return json.dumps({"orders": orders}, default=str)
+        except BaseException as e:
+            return json.dumps({"orders": f"Failed to get active orders {e}"})
+
 
 def create_restaurant(address: str, category: str, login: str, password: str):
     with conn.cursor() as cursor:
@@ -168,11 +178,14 @@ def create_restaurant(address: str, category: str, login: str, password: str):
         except BaseException as e:
             return json.dumps({"status": e})
 
-# def alter_restaurant(login: str) -> str:
-#     with conn.cursor() as cursor:
-#         if cursor.execute('UPDATE restaurant SET active = not active WHERE address = %s', [login]).rowcount:
-#             return json.dumps({"status": "Success"})
-#         return json.dumps({"status": "Fail"})
+def alter_restaurant(address: str) -> str:
+    with conn.cursor() as cursor:
+        try:
+            if cursor.execute('DELETE FROM restaurant WHERE address = %s', [address]).rowcount:
+                return json.dumps({"status": "Success"})
+        except psycopg.errors.ForeignKeyViolation:
+            return json.dumps({"status": "Foreign key violation"})#TODO: frontend popup
+        return json.dumps({"status": "Fail"})
 
 def get_cart(login: str) -> dict:
     with conn.cursor() as cursor:
