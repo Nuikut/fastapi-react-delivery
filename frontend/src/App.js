@@ -6,7 +6,7 @@ import Main from "./components/Main/Main";
 import Menu from "./components/Menu";
 import Admin from "./components/Admin/Admin";
 import AdminLogin from "./components/AdminLogin";
-import Cart from "./components/Cart/Cart";
+import Cart from "./components/Cart";
 import Staff from "./components/Staff/Staff";
 
 // TODO: Отовсрать фронт

@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic import BaseModel
 
 
@@ -67,12 +69,16 @@ class createStaff(BaseModel):
 class login(BaseModel):
     login: str
 
+class meal(BaseModel):
+    name: str
+    quantity: int
+
 class Order(BaseModel):
     total_price: int
     client: str
     staff: str
     restaurant: str
-    cart: dict = None
+    cart: List[meal]
 
     model_config = {
         "json_schema_extra": {

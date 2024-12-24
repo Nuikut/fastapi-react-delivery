@@ -1,6 +1,7 @@
 import {getMenu} from "../api/restaurants";
 import {useEffect, useState} from "react";
 import LoadingScreen from "./LoadingScreen/LoadingScreen";
+import MenuCard from "./MenuCard";
 
 
 export default function Menu({onSendData}) {
@@ -41,18 +42,7 @@ export default function Menu({onSendData}) {
             <h2 className="menu-title">Меню</h2>
             <div className="menu-items">
                 {menu && menu.length > 0 ? (menu.map((meal) => (
-                    <div className="menu-card">
-                        <img src={meal.image} alt={meal.name} className="menu-card-image"/>
-                        <div className="menu-card-content">
-                            <h3 className="menu-card-title">{meal.name}</h3>
-                            <p className="menu-card-description">{meal.description}</p>
-                            <div className="menu-card-footer">
-                                <span className="menu-card-price">{meal.price}₽</span>
-                                <span className="menu-card-price">{meal.category}</span>
-                                <button className="menu-card-button" onClick={() => addToCart(meal)}></button>
-                            </div>
-                        </div>
-                    </div>
+                    <MenuCard meal={meal} func={addToCart} action="+"></MenuCard>
                 )))
                     : <LoadingScreen child={'Получаем меню...'}></LoadingScreen>
                 }

@@ -27,6 +27,7 @@ export default function Profile() {
             }
         };
         checkToken();
+        loadOrders();
     }, [navigate]);
 
     const logout_user = async () => {
@@ -35,8 +36,9 @@ export default function Profile() {
     }
 
     const loadOrders = async () => {
-        const data = await getOrders();
+        const data = await getOrders(username);
         setOrders(data);
+        console.log(data);
     }
 
     return (

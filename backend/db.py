@@ -2,6 +2,8 @@ import json
 from datetime import datetime
 from os import environ, getenv
 from time import time
+from typing import List
+
 from jwt import DecodeError
 import psycopg
 from dotenv import load_dotenv, find_dotenv
@@ -68,6 +70,8 @@ def validate_token(iat: str) -> str:
         return json.dumps({"status": "Expired"})
     except DecodeError:
         return json.dumps({"status": "Fail"})
+    except ValueError:
+        return json.dumps({"status": "Empty"})
 
 
 def add_meals_to_order(name: str, quantity: int, order_id: int) -> bool:
@@ -79,18 +83,18 @@ def add_meals_to_order(name: str, quantity: int, order_id: int) -> bool:
             return False
 
 
-def make_order(total_price: int, client: str, staff: str, restaurant: str, cart: dict) -> str:
+def make_order(total_price: int, client: str, staff: str, restaurant: str, cart: list) -> str:
     with conn.cursor() as cursor:
         with conn.transaction():  # to prevent transaction errors stopping other transactions
             try:
                 cursor.execute('INSERT INTO orders VALUES (default, %s, %s, %s, %s, %s, %s, %s) RETURNING id',
                                [datetime.today().strftime('%Y-%m-%d %H:%M'), total_price, True, None, client, staff,
                                 restaurant])
-                new_id = cursor.fetchone()[0]
+                new_id = cursor.fetchall()[0]
             except psycopg.errors.ForeignKeyViolation:
                 return json.dumps({"status": "ForeignKeyViolation: client/staff/restaurant"})
             for item in cart:
-                if not add_meals_to_order(name=item, quantity=cart[item], order_id=new_id):
+                if not add_meals_to_order(name=item.name, quantity=item.quantity, order_id=new_id['id']):
                     return json.dumps({"status": "Failed to add from cart"})
             return json.dumps({"status": "Success"})
 
@@ -138,6 +142,14 @@ def get_staff() -> str:
         return json.dumps({"staff": staff})
 
 
+def get_staff_random(restaurant: str) -> str:
+    with conn.cursor() as cursor:
+        staff = list(cursor.execute('SELECT login FROM staff WHERE restaurant = %s ORDER BY RANDOM() LIMIT 1', [restaurant]).fetchall())
+        if not staff:
+            return json.dumps({"staff": "No staff"})
+        return json.dumps({"staff": staff})
+
+
 def alter_staff(login: str) -> str:
     with conn.cursor() as cursor:
         if cursor.execute('UPDATE staff SET active = not active WHERE login = %s', [login]).rowcount:
@@ -156,6 +168,7 @@ def add_staff(login: str, password: str, restaurant: str) -> str:
         except psycopg.errors.UniqueViolation:
             return json.dumps({"status": "Такой менеджер уже существует"})
     return json.dumps({"status": "Fail"})
+
 
 def get_staff_active_orders(restaurant:str, staff:str):
     with conn.cursor() as cursor:
@@ -178,6 +191,7 @@ def create_restaurant(address: str, category: str, login: str, password: str):
         except BaseException as e:
             return json.dumps({"status": e})
 
+
 def alter_restaurant(address: str) -> str:
     with conn.cursor() as cursor:
         try:
@@ -186,6 +200,7 @@ def alter_restaurant(address: str) -> str:
         except psycopg.errors.ForeignKeyViolation:
             return json.dumps({"status": "Foreign key violation"})#TODO: frontend popup
         return json.dumps({"status": "Fail"})
+
 
 def get_cart(login: str) -> dict:
     with conn.cursor() as cursor:

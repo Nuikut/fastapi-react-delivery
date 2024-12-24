@@ -1,22 +1,28 @@
 const API_URL = process.env.REACT_APP_API_URL;
 
 export async function loginUser(login, password) {
-    const response = await fetch(`${API_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-            'accept': 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({login: login, password: password})
-    })
+    try {
+        const response = await fetch(`${API_URL}/auth/login`, {
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({login: login, password: password})
+        })
 
-    const data = JSON.parse(await response.json())['access_token'];
+        const data = JSON.parse(await response.json())['access_token'];
 
-    if (response.ok) {
-        localStorage.setItem('access_token', data);
+        if (response.ok) {
+            localStorage.setItem('access_token', data);
+        }
+
+        return data;
+
+    } catch (error) {
+        console.log(error)
+        return 'Error while logging in'
     }
-
-    return data;
 }
 
 
