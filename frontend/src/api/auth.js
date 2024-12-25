@@ -91,3 +91,28 @@ export async function updateUserInfo(token, username, password, newUsername){
 
     return data.status;
 }
+
+export async function loginManager(login, password, restaurant) {
+    try {
+        const response = await fetch(`${API_URL}/auth/manager`, {
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({login: login, password: password, restaurant: restaurant})
+        })
+
+        const data = JSON.parse(await response.json())['access_token'];
+
+        if (response.ok) {
+            localStorage.setItem('manager_token', data);
+        }
+
+        return data;
+
+    } catch (error) {
+        console.log(error)
+        return 'Error while logging in'
+    }
+}

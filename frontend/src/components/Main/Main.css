@@ -99,21 +99,32 @@
 
 .menu-items {
     margin-top: 50px;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
     align-items: center;
 }
 
+.menu-card-image{
+    position: absolute;
+    top: 20px;
+}
+
 .menu-card-title {
+    position: absolute;
+    top: 60px;
     overflow: hidden;
 }
 
 .menu-card-description {
+    position: absolute;
+    bottom: 40px;
     text-align: justify;
-    overflow: hidden;
-    white-space: wrap;
+    overflow: clip;
+    height: 83px;
     text-overflow: ellipsis;
-    width: 230px;
-    max-width: 230px;
+    width: 250px;
+    max-width: 250px;
+    max-height: 83px;
     box-sizing: border-box;
 }
 
@@ -143,8 +154,16 @@
 .menu-card-price {
     text-align: right;
     font-weight: bold;
+    position: absolute;
+    bottom: 18px;
+    right: 60px;
 }
 
+.menu-card-category {
+    position: absolute;
+    bottom: 18px;
+
+}
 
 .restaurantListContainer {
     position: absolute;
@@ -165,4 +184,52 @@
 .restaurantCuisine:before {
     content: "Кухня: ";
     color: #888;
+}
+
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    padding: 15px 20px;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 1000;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.cookie-banner p {
+    margin: 0;
+    padding: 0;
+    flex: 1;
+}
+
+.cookie-banner a {
+    color: #ff7f50;
+    text-decoration: underline;
+}
+
+.cookie-banner a:hover {
+    text-decoration: none;
+}
+
+.cookie-btn {
+    background-color: #ff7f50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.cookie-btn:hover {
+    background-color: #ff6a33;
 }

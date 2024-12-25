@@ -50,10 +50,9 @@ export default function Profile() {
 
     const loadOrders = async () => {
         const data = await getActiveOrders(username);
-        console.log(orders);
         setOrders(data['order']);
-        console.log(orders);
         const response = await getHistoryOrders(username);
+        console.log(response['order']);
         setHistory(response['order']);
     }
 

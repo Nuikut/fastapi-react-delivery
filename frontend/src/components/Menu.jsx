@@ -44,10 +44,10 @@ export default function Menu({onSendData}) {
                 {menu && menu.length > 0 && (menu.map((meal) => (
                     <MenuCard meal={meal} func={addToCart} action="+"></MenuCard>
                 )))}
-                {!restaurant &&
-                    <LoadingScreen child={'Выберите ресторан'}></LoadingScreen>
-                }
             </div>
+            {!restaurant &&
+                <LoadingScreen child={'Выберите ресторан'}></LoadingScreen>
+            }
         </div>
     );
 }

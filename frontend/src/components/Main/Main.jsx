@@ -15,6 +15,7 @@ export default function RestaurantPage() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [cartLength, setCartLength] = useState(0);
     const [restaurants, setRestaurants] = useState([]);
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
         async function fetchRestaurants() {
@@ -25,7 +26,10 @@ export default function RestaurantPage() {
                 console.error("Ошибка при получении ресторанов:", error);
             }
         }
-
+        const cookieAccepted = localStorage.getItem("cookie");
+        if (!cookieAccepted) {
+            setVisible(true);
+        }
         fetchRestaurants();
     }, []);
 
@@ -81,6 +85,15 @@ export default function RestaurantPage() {
                 {isMenuOpen && <RestaurantList></RestaurantList>}
             </div>
             <Menu onSendData={handleCartUpdate}></Menu>
+            {visible &&
+                <div className="cookie-banner">
+                <p>
+                    Мы используем файлы cookie для улучшения работы сайта. Продолжая пользоваться сайтом, вы
+                    соглашаетесь с нашей
+                    <a href="/cookie-policy" target="_blank">политикой использования cookie</a>.
+                </p>
+                <button className="cookie-btn" id="acceptCookie" onClick={() => {setVisible(false); localStorage.setItem('cookie', 'accepted')}}>Принять</button>
+            </div>}
         </div>
     );
 };

@@ -1,38 +1,42 @@
 import {useState} from 'react';
 import {loginUser} from "../api/auth";
 import {loginStaff} from "../api/auth";
+import {loginManager} from "../api/auth";
 import {Link, useNavigate} from "react-router-dom";
+import './Login.css'
 
 export default function Login({type = "user"}) {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
+    const [restaurant, setRestaurant] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
-
 
     const loginHandler = async (e) => {
         e.preventDefault();
         let status;
 
         if (type === "staff") {
-
             status = await loginStaff(login, password);
+        } else if (type === "manager") {
+            status = await loginManager(login, password, restaurant);
         } else {
-
             status = await loginUser(login, password);
         }
 
         switch (status) {
             case 'Fail':
-                setError(type === "staff" ? 'Invalid employee credentials' : 'Invalid user credentials');
+                setError('Неверные данные');
                 break;
             case 'Blocked':
-                setError(type === "staff" ? 'This staff account has been blocked' : 'This account has been blocked');
+                setError('Аккаунт был заблокирован');
                 break;
             default:
                 setError('');
                 if (type === "staff") {
                     navigate("/staff");
+                } else if (type === "manager") {
+                    navigate("/manager");
                 } else {
                     navigate("/main");
                 }
@@ -41,34 +45,48 @@ export default function Login({type = "user"}) {
 
     return (
         <div className="Login">
-            <h1>{type === "staff" ? "Staff Login" : "User Login"}</h1>
+            <h1 className="Title">
+                {type === "staff"
+                    ? "Авторизация персонала"
+                    : type === "manager"
+                        ? "Авторизация менеджеров"
+                        : "Авторизация пользователей"}
+            </h1>
 
-            <form onSubmit={loginHandler}>
-                <input
+            <form onSubmit={loginHandler} >
+                <div className="Form">
+                <input className="loginForm"
                     type="text"
-                    placeholder={type === "staff" ? "Staff ID" : "Username"}
+                    placeholder="Логин"
                     value={login}
                     onChange={(e) => setLogin(e.target.value)}
                     minLength={1}
                     maxLength={32}
                     required
                 />
-                <input
+                <input className="loginForm"
                     type="password"
-                    placeholder="Password"
+                    placeholder="Пароль"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-
-                <button type="submit">Log in</button>
-                {error && <div style={{color: 'red'}}>{error}</div>}
+                {type === "manager" &&
+                    <input className="loginForm"
+                        type="text"
+                        placeholder="Ресторан"
+                        value={restaurant}
+                        onChange={(e) => setRestaurant(e.target.value)}
+                        required
+                    />
+                }
+                </div>
+                <button className="loginButton" type="submit">Войти</button>
+                {error && <div style={{color: 'red', textAlign:"center"}}>{error}</div>}
                 <div className="hints">
-                    {type === "staff" ? (
-                        <div></div>
-                    ) : (
+                    {type === "user" && (
                         <p className="hint">
-                            Don't have an account? <Link to="/signup">Sign up</Link>
+                            Нет аккаунта? <Link to="/signup">Зарегистрироваться</Link>
                         </p>
                     )}
                 </div>

@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 from db import validate_user, create_user, validate_manager, get_menu, get_restaurants, validate_token, make_order, \
     get_active_client_orders, get_staff, admin, alter_staff, add_staff, create_restaurant, get_all_user_orders, \
     alter_restaurant, \
-    get_staff_active_orders, get_staff_random, update_user, rate_order
+    get_staff_active_orders, get_staff_random, update_user, rate_order, order_ready, get_staff_history_orders
 from schemas import Client, createStaff, Staff, Order, Admin, login, Restaurant, restaurant, newClient
 
 login_router = APIRouter(
@@ -74,9 +74,6 @@ async def get_active_client_order(login: str = None):
 async def get_history_user_orders(login: str = None):
     return get_all_user_orders(login=login)
 
-@info_router.get("/restaurant/orders")
-async def get_restaurant_active_orders(restaurant: str = None, login: str = None, token: str = Depends(validate)):
-    return get_staff_active_orders(restaurant=restaurant, staff=login)
 
 @info_router.patch("/order")
 async def set_order_rating(id: str = None, rating: str = None):
@@ -115,3 +112,29 @@ async def add_restaurant(restaurant: Restaurant):
 @admin_router.delete("/restaurant")
 async def delete_restaurant(restaurant: restaurant):
     return alter_restaurant(restaurant.address)
+
+
+staff_router = APIRouter(
+    prefix="/staff",
+    tags=["staff info"]
+)
+
+@staff_router.get("/orders")
+async def get_restaurant_active_orders(login: str = None):
+    return get_staff_active_orders(staff=login)
+
+@staff_router.get("/orders/old")
+async def get_restaurant_all_orders(login: str = None):
+    return get_staff_history_orders(staff=login)
+
+@staff_router.patch("/order")
+async def set_order_ready(id: str = None):
+    return order_ready(id=id)
+
+
+manager_router = APIRouter(
+    prefix="/manager",
+    tags=["manager info"]
+)
+
+# @manager_router.post("/manager")

@@ -25,27 +25,28 @@ export default function AdminLogin() {
 
     return (
         <div className="Login">
-            <h1>Login</h1>
+            <h1 className="Title">Вход Админа</h1>
 
             <form onSubmit={loginUserHandler}>
-                <input
+                <div className="Form">
+                <input className="loginForm"
                     type="text"
-                    placeholder="Username"
+                    placeholder="Логин"
                     value={login}
                     onChange={(e) => setLogin(e.target.value)}
                     minLength={1}
                     maxLength={32}
                     required
                 />
-                <input
+                <input className="loginForm"
                     type="password"
-                    placeholder="Password"
+                    placeholder="Пароль"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-
-                <button type="submit">Log in</button>
+                </div>
+                <button className="loginButton" type="submit">Log in</button>
                 {error && <div style={{color: 'red'}}>{error}</div>}
             </form>
         </div>

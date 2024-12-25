@@ -1,12 +1,18 @@
 import './Orders.css'
 import {useState} from "react";
 import {rateOrder} from "../../api/cart";
+import {setOrderReady} from "../../api/staff";
 
-export default function Orders({orders}) {
+export default function Orders({orders, staff = false, onOrderUpdate}) {
     const [rating, setRating] = useState(0);
 
     const rate = (id) => {
         const response = rateOrder(id, rating)
+    }
+
+    const setReady = (id) => {
+        const response = setOrderReady(id, rating)
+        onOrderUpdate();
     }
 
     if (!orders || orders.length < 1)
@@ -31,10 +37,11 @@ export default function Orders({orders}) {
                                 <p>{item[0]} x{item[1]} </p>
                             ))}
                         </div>
-                        {!order.rating &&
+                        {!order.rating || staff &&
                             <div className="restaurantButton" style={{marginLeft: "auto", marginRight: "5px"}}>
+
                                 <div style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-                                    <input
+                                    {!staff && <input
                                         type="number"
                                         min="1"
                                         max="5"
@@ -48,8 +55,8 @@ export default function Orders({orders}) {
                                             borderBlock: "none",
                                             padding: "5px",
                                         }}
-                                    />
-                                    <button onClick={() => rate(order.id)}>Оценить</button>
+                                    />}
+                                    <button onClick={() => !staff ? rate(order.id) : setReady(order.id)}>{!staff ? "Оценить" : "Готов"}</button>
                                 </div>
                             </div>
                         }
