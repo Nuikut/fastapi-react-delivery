@@ -18,6 +18,23 @@ class Client(BaseModel):
         }
     }
 
+class newClient(BaseModel):
+    login: str
+    password: str
+    newLogin: str
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "login": "admin",
+                    "password": "root",
+                    "newLogin": "root",
+                }
+            ]
+        }
+    }
+
 class Admin(BaseModel):
     login: str
     password: str

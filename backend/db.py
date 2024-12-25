@@ -32,12 +32,33 @@ def create_user(login: str, password: str) -> str:
 
 
 def validate_user(login: str, password: str, type: str) -> str:
+    print(login, password, type)
     with conn.cursor() as cursor:
         cursor.execute(f'SELECT login, password FROM {type} WHERE login = %s', [login])
         data = cursor.fetchone()
         if data and bcrypt.checkpw(password=password.encode(), hashed_password=data['password'].encode()):
             return json.dumps({"access_token": encode_jwt(data['login'])})
         return json.dumps({"access_token": "Fail"})
+
+
+def update_user(login: str, password: str, newLogin: str) -> str:
+    print(login, password, newLogin)
+    with conn.cursor() as cursor:
+        try:
+            if newLogin == '':
+                cursor.execute(f'UPDATE client SET password = %s WHERE login = %s',
+                               [bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(), login])
+            elif password == '':
+                cursor.execute(f'UPDATE client SET login = %s WHERE login = %s',
+                                   [newLogin, login])
+            else:
+                cursor.execute(f'UPDATE client SET login = %s, password = %s WHERE login = %s',
+                           [newLogin, bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(), login])
+            if cursor.rowcount == 1:
+                return json.dumps({"status": "Success"})
+            return json.dumps({"status": "Fail"})
+        except psycopg.errors.UniqueViolation:
+            return json.dumps({"status": "Username taken"})
 
 
 def validate_manager(login: str, password: str, restaurant: str) -> str:
@@ -65,7 +86,7 @@ def get_restaurants() -> str:
 
 def validate_token(iat: str) -> str:
     try:
-        if int(time()) - iat < 900:
+        if int(time()) - int(iat) < 900:
             return json.dumps({"status": "Success"})
         return json.dumps({"status": "Expired"})
     except DecodeError:
@@ -99,31 +120,40 @@ def make_order(total_price: int, client: str, staff: str, restaurant: str, cart:
             return json.dumps({"status": "Success"})
 
 
-def get_active_client_orders(login: str) -> str: #TODO: rethink single order returning
+def get_active_client_orders(login: str) -> str:  # TODO: rethink single order returning
     with conn.cursor() as cursor:
         order = list(cursor.execute('SELECT * FROM orders WHERE client = %s AND active = TRUE', [login]).fetchall())
         if not order:
-            return json.dumps({"status": "No active orders"})
-        meals = cursor.execute('SELECT * FROM meal_order WHERE id = %s', [order[0]['id']]).fetchall()
-        cart = dict()
-        for item in meals:
-            cart[item['name']] = item['quantity']
-        order.append(cart)
-        return json.dumps(order, default=str)
+            return json.dumps({"order": "No active orders"})
+        for item in order:
+            meals = cursor.execute('SELECT * FROM meal_order WHERE id = %s', [item['id']]).fetchall()
+            cart = list()
+            for meal in meals:
+                cart.append([meal['name'], meal['quantity']])
+            item['cart'] = cart
+        return json.dumps({"order": order}, default=str)
 
 
 def get_all_user_orders(login: str) -> str:
     with conn.cursor() as cursor:
-        order = list(cursor.execute('SELECT * FROM orders WHERE client = %s', [login]).fetchall())
+        order = list(cursor.execute('SELECT * FROM orders WHERE client = %s AND active = FALSE', [login]).fetchall())
         if not order:
             return json.dumps({"status": "No user orders"})
         for item in order:
             meals = cursor.execute('SELECT * FROM meal_order WHERE id = %s', [item['id']]).fetchall()
-            cart = dict()
+            cart = list()
             for meal in meals:
-                cart[meal['name']] = meal['quantity']
-        order.append(cart)
-        return json.dumps(order, default=str)
+                cart.append([meal['name'], meal['quantity']])
+            item['cart'] = cart
+        return json.dumps({"order": order}, default=str)
+
+
+def rate_order(id: str, rating: int):
+    with conn.cursor() as cursor:
+        cursor.execute('UPDATE orders SET rating = %s WHERE id = %s', [rating, id])
+        if cursor.rowcount == 1:
+            return json.dumps({"status": "Success"})
+        return json.dumps({"status": "Fail"})
 
 
 def admin(login: str, password: str) -> str:
@@ -144,7 +174,8 @@ def get_staff() -> str:
 
 def get_staff_random(restaurant: str) -> str:
     with conn.cursor() as cursor:
-        staff = list(cursor.execute('SELECT login FROM staff WHERE restaurant = %s ORDER BY RANDOM() LIMIT 1', [restaurant]).fetchall())
+        staff = list(cursor.execute('SELECT login FROM staff WHERE restaurant = %s ORDER BY RANDOM() LIMIT 1',
+                                    [restaurant]).fetchall())
         if not staff:
             return json.dumps({"staff": "No staff"})
         return json.dumps({"staff": staff})
@@ -170,10 +201,11 @@ def add_staff(login: str, password: str, restaurant: str) -> str:
     return json.dumps({"status": "Fail"})
 
 
-def get_staff_active_orders(restaurant:str, staff:str):
+def get_staff_active_orders(restaurant: str, staff: str):
     with conn.cursor() as cursor:
         try:
-            cursor.execute('SELECT * FROM orders WHERE restaurant = %s AND staff = %s AND active = TRUE', [restaurant, staff])
+            cursor.execute('SELECT * FROM orders WHERE restaurant = %s AND staff = %s AND active = TRUE',
+                           [restaurant, staff])
             orders = list(cursor.fetchall())
             if not orders:
                 return json.dumps({"orders": "No active orders"})
@@ -186,7 +218,8 @@ def create_restaurant(address: str, category: str, login: str, password: str):
     with conn.cursor() as cursor:
         try:
             if cursor.execute('INSERT INTO restaurant VALUES (%s, %s, %s, %s)',
-                              [address, category, login, bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()]).rowcount:
+                              [address, category, login,
+                               bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()]).rowcount:
                 return json.dumps({"status": "Success"})
         except BaseException as e:
             return json.dumps({"status": e})
@@ -198,7 +231,7 @@ def alter_restaurant(address: str) -> str:
             if cursor.execute('DELETE FROM restaurant WHERE address = %s', [address]).rowcount:
                 return json.dumps({"status": "Success"})
         except psycopg.errors.ForeignKeyViolation:
-            return json.dumps({"status": "Foreign key violation"})#TODO: frontend popup
+            return json.dumps({"status": "Foreign key violation"})  # TODO: frontend popup
         return json.dumps({"status": "Fail"})
 
 

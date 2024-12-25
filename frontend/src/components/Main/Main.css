@@ -161,3 +161,8 @@
     min-height: 91%;
     max-width: 390px;
 }
+
+.restaurantCuisine:before {
+    content: "Кухня: ";
+    color: #888;
+}

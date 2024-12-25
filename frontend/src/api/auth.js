@@ -35,9 +35,7 @@ export async function registerUser(login, password) {
         },
         body: JSON.stringify({login: login, password: password})
     })
-    const data = JSON.parse(await response.json())['status'];
-
-    return data;
+    return JSON.parse(await response.json())['status'];
 }
 
 export async function loginStaff(login, password) {
@@ -73,4 +71,23 @@ export async function validateToken(token){
     const data = JSON.parse(await response.json());
 
     return data.status === 'Success';
+}
+
+export async function updateUserInfo(token, username, password, newUsername){
+    if (!newUsername) newUsername = '';
+    if (!password) password = '';
+    if (!token)
+        return false;
+    const response = await fetch(`${API_URL}/auth/update`, {
+        method: 'PATCH',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({login: username, password: password, newLogin: newUsername})
+    })
+    const data = JSON.parse(await response.json());
+
+    return data.status;
 }

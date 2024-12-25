@@ -1,9 +1,10 @@
 from auth.auth import validate
 from fastapi import APIRouter, Depends
 from db import validate_user, create_user, validate_manager, get_menu, get_restaurants, validate_token, make_order, \
-    get_active_client_orders, get_staff, admin, alter_staff, add_staff, create_restaurant, get_all_user_orders, alter_restaurant, \
-    get_staff_active_orders
-from schemas import Client, createStaff, Staff, Order, Admin, login, Restaurant, restaurant
+    get_active_client_orders, get_staff, admin, alter_staff, add_staff, create_restaurant, get_all_user_orders, \
+    alter_restaurant, \
+    get_staff_active_orders, get_staff_random, update_user, rate_order
+from schemas import Client, createStaff, Staff, Order, Admin, login, Restaurant, restaurant, newClient
 
 login_router = APIRouter(
     prefix="/auth",
@@ -19,6 +20,11 @@ async def login_client(user: Client) -> str:
 @login_router.post("/register")
 async def register_client(user: Client) -> str:
     return create_user(login=user.login, password=user.password)
+
+
+@login_router.patch("/update")
+async def update_client(user: newClient) -> str:
+    return update_user(login=user.login, password=user.password, newLogin=user.newLogin)
 
 
 @login_router.post("/staff")
@@ -53,9 +59,12 @@ async def restaurants():
 
 
 @info_router.post("/order")
-async def place_order(order: Order, token: str = Depends(validate)):
+async def place_order(order: Order):
     return make_order(order.total_price, order.client, order.staff, order.restaurant, order.cart)
 
+@info_router.get("/staff")
+async def get_random_staff(restaurant: str = None):
+    return get_staff_random(restaurant)
 
 @info_router.get("/order")
 async def get_active_client_order(login: str = None):
@@ -68,6 +77,10 @@ async def get_history_user_orders(login: str = None):
 @info_router.get("/restaurant/orders")
 async def get_restaurant_active_orders(restaurant: str = None, login: str = None, token: str = Depends(validate)):
     return get_staff_active_orders(restaurant=restaurant, staff=login)
+
+@info_router.patch("/order")
+async def set_order_rating(id: str = None, rating: str = None):
+    return rate_order(id, int(rating))
 
 admin_router = APIRouter(
     prefix="/admin",

@@ -1,0 +1,57 @@
+.orderTime {
+    font-size: 16px;
+    width: 100%;
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+}
+
+.orderTime:before {
+    content: "Дата: ";
+    color: #888;
+}
+
+.orderAddress {
+    font-size: 16px;
+    width: 100%;
+    max-width: 400px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+}
+
+.orderAddress:before {
+    content: "Адрес: ";
+    color: #888;
+}
+
+.orderRating {
+    font-size: 16px;
+    width: 100%;
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: relative;
+}
+
+.orderRating:before {
+    content: "Оценка: ";
+    color: #888;
+}
+
+.collapsibleButton {
+    background-color: #fd7e4f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-align: center;
+    width: 100%;
+}

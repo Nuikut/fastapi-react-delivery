@@ -98,7 +98,6 @@ export default function Cart() {
         }, {});
 
         setOrderedCart(groupedCart);
-
         const total = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
         setTotalPrice(total);
     }, [cart]);
@@ -106,7 +105,7 @@ export default function Cart() {
     return (
         <div className="Cart" style={{display: "flex", flexDirection: "column", minHeight: "100vh"}}>
             <Header/>
-            <div className="menu" style={{flexGrow: 1}}>{mapCart()}</div>
+            <div className="menu" style={{flexGrow: 1, marginTop:"100px"}}>{mapCart()}</div>
             <ToastContainer />
             <footer
                 style={{

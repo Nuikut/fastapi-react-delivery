@@ -34,7 +34,7 @@ export default function Login({type = "user"}) {
                 if (type === "staff") {
                     navigate("/staff");
                 } else {
-                    navigate("/profile");
+                    navigate("/main");
                 }
         }
     };

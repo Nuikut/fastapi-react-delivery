@@ -56,7 +56,7 @@ export default function RestaurantPage() {
                         <div className="restaurantListItem">
                             <li className='restaurantAddress'
                                 onClick={() => selectRestaurant(restaurant.address)}> {restaurant.address}<br/></li>
-                            <li className='restaurantCuisine'> {restaurant.category}</li>
+                            <li className='restaurantCuisine' style={{textAlign:'right'}}> {restaurant.category}</li>
                         </div>
                     ))}
                 </ul>

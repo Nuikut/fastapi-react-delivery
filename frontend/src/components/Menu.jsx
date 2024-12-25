@@ -41,10 +41,11 @@ export default function Menu({onSendData}) {
         <div className="menu">
             <h2 className="menu-title">Меню</h2>
             <div className="menu-items">
-                {menu && menu.length > 0 ? (menu.map((meal) => (
+                {menu && menu.length > 0 && (menu.map((meal) => (
                     <MenuCard meal={meal} func={addToCart} action="+"></MenuCard>
-                )))
-                    : <LoadingScreen child={'Получаем меню...'}></LoadingScreen>
+                )))}
+                {!restaurant &&
+                    <LoadingScreen child={'Выберите ресторан'}></LoadingScreen>
                 }
             </div>
         </div>
