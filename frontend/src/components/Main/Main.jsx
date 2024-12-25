@@ -21,7 +21,7 @@ export default function RestaurantPage() {
         async function fetchRestaurants() {
             try {
                 const data = await getRestaurants();
-                setRestaurants(data);
+                setRestaurants(data['restaurants']);
             } catch (error) {
                 console.error("Ошибка при получении ресторанов:", error);
             }

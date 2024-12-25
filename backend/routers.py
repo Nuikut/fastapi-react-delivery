@@ -3,8 +3,9 @@ from fastapi import APIRouter, Depends
 from db import validate_user, create_user, validate_manager, get_menu, get_restaurants, validate_token, make_order, \
     get_active_client_orders, get_staff, admin, alter_staff, add_staff, create_restaurant, get_all_user_orders, \
     alter_restaurant, \
-    get_staff_active_orders, get_staff_random, update_user, rate_order, order_ready, get_staff_history_orders
-from schemas import Client, createStaff, Staff, Order, Admin, login, Restaurant, restaurant, newClient
+    get_staff_active_orders, get_staff_random, update_user, rate_order, order_ready, get_staff_history_orders, \
+    change_staff, delete_staff, create_meal
+from schemas import Client, createStaff, Staff, Order, Admin, login, Restaurant, restaurant, newClient, fullMeal
 
 login_router = APIRouter(
     prefix="/auth",
@@ -137,4 +138,14 @@ manager_router = APIRouter(
     tags=["manager info"]
 )
 
-# @manager_router.post("/manager")
+@manager_router.patch("/staff")
+async def changeStaff(staff: createStaff):
+    return change_staff(staff.login, staff.password, staff.restaurant)
+
+@manager_router.delete("/staff")
+async def deleteStaff(staff: Staff):
+    return delete_staff(staff.login, staff.password)
+
+@manager_router.post("/meal")
+async def createMeal(meal: fullMeal):
+    return create_meal(*meal)

@@ -11,8 +11,8 @@ class Client(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {
-                    "login": "admin",
-                    "password": "admin",
+                    "login": "client",
+                    "password": "client",
                 }
             ]
         }
@@ -27,7 +27,7 @@ class newClient(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {
-                    "login": "admin",
+                    "login": "client",
                     "password": "root",
                     "newLogin": "root",
                 }
@@ -132,3 +132,13 @@ class Restaurant(BaseModel):
 
 class restaurant(BaseModel):
     address: str
+
+
+class fullMeal(BaseModel):
+    name: str
+    description: str
+    image: str
+    price: int
+    category: str
+    available: bool
+    restaurant: str

@@ -12,7 +12,7 @@ export default function Menu({onSendData}) {
 
     const fetchMenu = async (restaurant) => {
         const response = await getMenu(restaurant);
-        setMenu(response);
+        setMenu(response['menu']);
     };
 
     useEffect(() => {

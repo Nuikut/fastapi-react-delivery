@@ -1,13 +1,12 @@
 import json
 from datetime import datetime
 from os import environ, getenv
+from pathlib import Path
 from time import time
-from typing import List
-
 from jwt import DecodeError
 import psycopg
 from dotenv import load_dotenv, find_dotenv
-from auth.auth import encode_jwt, decode_jwt
+from auth.auth import encode_jwt
 import bcrypt
 
 if 'PYDEVD_LOAD_VALUES_ASYNC' in environ:
@@ -22,22 +21,28 @@ conn = psycopg.connect(host=getenv("postgres_host"), user=getenv("postgres_user"
 
 
 def create_user(login: str, password: str) -> str:
-    with conn.cursor() as cursor:
-        cursor.execute("SELECT 1 FROM client WHERE EXISTS (SELECT * FROM client WHERE login = %s)", [login])
-        if cursor.fetchone():
-            return json.dumps({"status": "Fail"})
-        cursor.execute("INSERT INTO client (login, password, active) VALUES (%s, %s, %s)",
-                       [login, bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(), "true"])
-        return json.dumps({"status": "Success"})
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT 1 FROM client WHERE EXISTS (SELECT * FROM client WHERE login = %s)", [login])
+            if cursor.fetchone():
+                return json.dumps({"status": "Fail"})
+            cursor.execute("INSERT INTO client (login, password, active) VALUES (%s, %s, %s)",
+                           [login, bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode(), "true"])
+            return json.dumps({"status": "Success"})
+    except Exception as e:
+        return json.dumps({"status": str(e)})
 
 
 def validate_user(login: str, password: str, type: str) -> str:
-    with conn.cursor() as cursor:
-        cursor.execute(f'SELECT login, password FROM {type} WHERE login = %s', [login])
-        data = cursor.fetchone()
-        if data and bcrypt.checkpw(password=password.encode(), hashed_password=data['password'].encode()):
-            return json.dumps({"access_token": encode_jwt(data['login'])})
-        return json.dumps({"access_token": "Fail"})
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(f'SELECT login, password FROM {type} WHERE login = %s', [login])
+            data = cursor.fetchone()
+            if data and bcrypt.checkpw(password=password.encode(), hashed_password=data['password'].encode()):
+                return json.dumps({"access_token": encode_jwt(data['login'])})
+            return json.dumps({"access_token": "Fail"})
+    except Exception as e:
+        return json.dumps({"status": str(e)})
 
 
 def update_user(login: str, password: str, newLogin: str) -> str:
@@ -60,26 +65,35 @@ def update_user(login: str, password: str, newLogin: str) -> str:
 
 
 def validate_manager(login: str, password: str, restaurant: str) -> str:
-    with conn.cursor() as cursor:
-        cursor.execute(
-            f'SELECT manager_login, manager_password FROM restaurant WHERE manager_login = %s AND address = %s',
-            [login, restaurant])
-        data = cursor.fetchone()
-        if data and bcrypt.checkpw(password=password.encode(), hashed_password=data['manager_password'].encode()):
-            return json.dumps({"access_token": encode_jwt(data['manager_login'])})
-        return json.dumps({"access_token": "Fail"})
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute(
+                f'SELECT manager_login, manager_password FROM restaurant WHERE manager_login = %s AND address = %s',
+                [login, restaurant])
+            data = cursor.fetchone()
+            if data and bcrypt.checkpw(password=password.encode(), hashed_password=data['manager_password'].encode()):
+                return json.dumps({"access_token": encode_jwt(data['manager_login'])})
+            return json.dumps({"access_token": "Fail"})
+    except Exception as e:
+        return json.dumps({"status": str(e)})
 
 
 def get_menu(restaurant: str) -> str:
-    with conn.cursor() as cursor:
-        cursor.execute('SELECT * FROM meal WHERE restaurant = %s AND available = true', [restaurant])
-        return json.dumps(cursor.fetchall())
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute('SELECT * FROM meal WHERE restaurant = %s AND available = true', [restaurant])
+            return json.dumps({"menu": cursor.fetchall()})
+    except Exception as e:
+        return json.dumps({"menu": str(e)})
 
 
 def get_restaurants() -> str:
-    with conn.cursor() as cursor:
-        cursor.execute('SELECT address, category FROM restaurant')
-        return json.dumps(cursor.fetchall())
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute('SELECT address, category FROM restaurant')
+            return json.dumps({"restaurants": cursor.fetchall()})
+    except Exception as e:
+        return json.dumps({"restaurants": str(e)})
 
 
 def validate_token(iat: str) -> str:
@@ -94,12 +108,15 @@ def validate_token(iat: str) -> str:
 
 
 def add_meals_to_order(name: str, quantity: int, order_id: int) -> bool:
-    with conn.cursor() as cursor:
-        try:
-            cursor.execute('INSERT INTO meal_order VALUES (%s, %s, %s)', [order_id, name, quantity])
-            return True
-        except psycopg.errors.ForeignKeyViolation:
-            return False
+    try:
+        with conn.cursor() as cursor:
+            try:
+                cursor.execute('INSERT INTO meal_order VALUES (%s, %s, %s)', [order_id, name, quantity])
+                return True
+            except psycopg.errors.ForeignKeyViolation:
+                return False
+    except psycopg.errors.UniqueViolation:
+        return False
 
 
 def make_order(total_price: int, client: str, staff: str, restaurant: str, cart: list) -> str:
@@ -118,72 +135,95 @@ def make_order(total_price: int, client: str, staff: str, restaurant: str, cart:
             return json.dumps({"status": "Success"})
 
 
-def get_active_client_orders(login: str) -> str:  # TODO: rethink single order returning
-    with conn.cursor() as cursor:
-        order = list(cursor.execute('SELECT * FROM orders WHERE client = %s AND active = TRUE', [login]).fetchall())
-        if not order:
-            return json.dumps({"order": "No active orders"})
-        for item in order:
-            meals = cursor.execute('SELECT * FROM meal_order WHERE id = %s', [item['id']]).fetchall()
-            cart = list()
-            for meal in meals:
-                cart.append([meal['name'], meal['quantity']])
-            item['cart'] = cart
-        return json.dumps({"order": order}, default=str)
+def get_active_client_orders(login: str) -> str:
+    try:
+        with conn.cursor() as cursor:
+            order = list(cursor.execute('SELECT * FROM orders WHERE client = %s AND active = TRUE', [login]).fetchall())
+            if not order:
+                return json.dumps({"order": "No active orders"})
+            for item in order:
+                meals = cursor.execute('SELECT * FROM meal_order WHERE id = %s', [item['id']]).fetchall()
+                cart = list()
+                for meal in meals:
+                    cart.append([meal['name'], meal['quantity']])
+                item['cart'] = cart
+            return json.dumps({"order": order}, default=str)
+    except Exception as e:
+        return json.dumps({"order": str(e)})
 
 
 def get_all_user_orders(login: str) -> str:
-    with conn.cursor() as cursor:
-        order = list(cursor.execute('SELECT * FROM orders WHERE client = %s AND active = FALSE', [login]).fetchall())
-        if not order:
-            return json.dumps({"status": "No user orders"})
-        for item in order:
-            meals = cursor.execute('SELECT * FROM meal_order WHERE id = %s', [item['id']]).fetchall()
-            cart = list()
-            for meal in meals:
-                cart.append([meal['name'], meal['quantity']])
-            item['cart'] = cart
-        return json.dumps({"order": order}, default=str)
+    try:
+        with conn.cursor() as cursor:
+            order = list(cursor.execute('SELECT * FROM orders WHERE client = %s AND active = FALSE', [login]).fetchall())
+            if not order:
+                return json.dumps({"status": "No user orders"})
+            for item in order:
+                meals = cursor.execute('SELECT * FROM meal_order WHERE id = %s', [item['id']]).fetchall()
+                cart = list()
+                for meal in meals:
+                    cart.append([meal['name'], meal['quantity']])
+                item['cart'] = cart
+            return json.dumps({"order": order}, default=str)
+    except Exception as e:
+        return json.dumps({"order": str(e)})
 
 
 def rate_order(id: str, rating: int):
-    with conn.cursor() as cursor:
-        cursor.execute('UPDATE orders SET rating = %s WHERE id = %s', [rating, id])
-        if cursor.rowcount == 1:
-            return json.dumps({"status": "Success"})
-        return json.dumps({"status": "Fail"})
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute('UPDATE orders SET rating = %s WHERE id = %s', [rating, id])
+            if cursor.rowcount == 1:
+                return json.dumps({"status": "Success"})
+            return json.dumps({"status": "Fail"})
+    except psycopg.errors.ForeignKeyViolation:
+        return json.dumps({"status": "ForeignKeyViolation"})
+    except Exception as e:
+        return json.dumps({"status": str(e)})
 
 
 def admin(login: str, password: str) -> str:
-    admin_login = getenv("admin_login")
-    admin_password = getenv("admin_password")
-    if login == admin_login and bcrypt.checkpw(password=password.encode(), hashed_password=admin_password.encode()):
-        return json.dumps({"access_token": encode_jwt('admin')})
-    return json.dumps({"access_token": "Fail"})
+    try:
+        admin_login = getenv("admin_login")
+        admin_password = getenv("admin_password")
+        if login == admin_login and bcrypt.checkpw(password=password.encode(), hashed_password=admin_password.encode()):
+            return json.dumps({"access_token": encode_jwt('admin')})
+        return json.dumps({"access_token": "Fail"})
+    except FileNotFoundError:
+        return json.dumps({"access_token": "fail"})
 
 
 def get_staff() -> str:
-    with conn.cursor() as cursor:
-        staff = list(cursor.execute('SELECT * FROM staff').fetchall())
-        if not staff:
-            return json.dumps({"staff": "No staff"})
-        return json.dumps({"staff": staff})
+    try:
+        with conn.cursor() as cursor:
+            staff = list(cursor.execute('SELECT * FROM staff').fetchall())
+            if not staff:
+                return json.dumps({"staff": "No staff"})
+            return json.dumps({"staff": staff})
+    except Exception as e:
+        return json.dumps({"staff": str(e)})
 
 
 def get_staff_random(restaurant: str) -> str:
-    with conn.cursor() as cursor:
-        staff = list(cursor.execute('SELECT login FROM staff WHERE restaurant = %s ORDER BY RANDOM() LIMIT 1',
-                                    [restaurant]).fetchall())
-        if not staff:
-            return json.dumps({"staff": "No staff"})
-        return json.dumps({"staff": staff})
+    try:
+        with conn.cursor() as cursor:
+            staff = list(cursor.execute('SELECT login FROM staff WHERE restaurant = %s ORDER BY RANDOM() LIMIT 1',
+                                        [restaurant]).fetchall())
+            if not staff:
+                return json.dumps({"staff": "No staff"})
+            return json.dumps({"staff": staff})
+    except Exception as e:
+        return json.dumps({"staff": str(e)})
 
 
 def alter_staff(login: str) -> str:
-    with conn.cursor() as cursor:
-        if cursor.execute('UPDATE staff SET active = not active WHERE login = %s', [login]).rowcount:
-            return json.dumps({"status": "Success"})
-        return json.dumps({"status": "Fail"})
+    try:
+        with conn.cursor() as cursor:
+            if cursor.execute('UPDATE staff SET active = not active WHERE login = %s', [login]).rowcount:
+                return json.dumps({"status": "Success"})
+            return json.dumps({"status": "Fail"})
+    except Exception as e:
+        return json.dumps({"status": str(e)})
 
 
 def add_staff(login: str, password: str, restaurant: str) -> str:
@@ -200,33 +240,40 @@ def add_staff(login: str, password: str, restaurant: str) -> str:
 
 
 def get_staff_active_orders(staff: str):
-    with conn.cursor() as cursor:
-        order = list(cursor.execute('SELECT * FROM orders WHERE staff = %s AND active = TRUE',
-                           [staff]))
-        if not order:
-            return json.dumps({"status": "No active orders"})
-        for item in order:
-            meals = cursor.execute('SELECT * FROM meal_order WHERE id = %s', [item['id']]).fetchall()
-            cart = list()
-            for meal in meals:
-                cart.append([meal['name'], meal['quantity']])
-            item['cart'] = cart
-        return json.dumps({"order": order}, default=str)
+    try:
+        with conn.cursor() as cursor:
+            order = list(cursor.execute('SELECT * FROM orders WHERE staff = %s AND active = TRUE',
+                               [staff]))
+            if not order:
+                return json.dumps({"status": "No active orders"})
+            for item in order:
+                meals = cursor.execute('SELECT * FROM meal_order WHERE id = %s', [item['id']]).fetchall()
+                cart = list()
+                for meal in meals:
+                    cart.append([meal['name'], meal['quantity']])
+                item['cart'] = cart
+            return json.dumps({"order": order}, default=str)
+    except Exception as e:
+        return json.dumps({"status": str(e)})
 
 
 def get_staff_history_orders(staff: str):
-    with conn.cursor() as cursor:
-        order = list(cursor.execute('SELECT * FROM orders WHERE staff = %s AND active = FALSE',
-                                    [staff]))
-        if not order:
-            return json.dumps({"status": "No active orders"})
-        for item in order:
-            meals = cursor.execute('SELECT * FROM meal_order WHERE id = %s', [item['id']]).fetchall()
-            cart = list()
-            for meal in meals:
-                cart.append([meal['name'], meal['quantity']])
-            item['cart'] = cart
-        return json.dumps({"order": order}, default=str)
+    try:
+        with conn.cursor() as cursor:
+            order = list(cursor.execute('SELECT * FROM orders WHERE staff = %s AND active = FALSE',
+                                        [staff]))
+            if not order:
+                return json.dumps({"status": "No active orders"})
+            for item in order:
+                meals = cursor.execute('SELECT * FROM meal_order WHERE id = %s', [item['id']]).fetchall()
+                cart = list()
+                for meal in meals:
+                    cart.append([meal['name'], meal['quantity']])
+                item['cart'] = cart
+            return json.dumps({"order": order}, default=str)
+    except Exception as e:
+        return json.dumps({'order': str(e)})
+
 
 def create_restaurant(address: str, category: str, login: str, password: str):
     with conn.cursor() as cursor:
@@ -236,7 +283,7 @@ def create_restaurant(address: str, category: str, login: str, password: str):
                                bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()]).rowcount:
                 return json.dumps({"status": "Success"})
         except BaseException as e:
-            return json.dumps({"status": e})
+            return json.dumps({"status": str(e)})
 
 
 def alter_restaurant(address: str) -> str:
@@ -261,4 +308,38 @@ def order_ready(id: str):
                 return json.dumps({"status": "Success"})
             return json.dumps({"status": "Fail"})
         except Exception as e:
-            return json.dumps({"status": e})
+            return json.dumps({"status": str(e)})
+
+
+def change_staff(login: str, password: str, restaurant: str) -> str:
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute('UPDATE staff SET active = FALSE WHERE login = %s AND password = %s AND restaurant = %s', [login, password, restaurant])
+            if cursor.rowcount == 1:
+                return json.dumps({"status": "Success"})
+            else:
+                return json.dumps({"status": "Fail"})
+    except Exception as e:
+        return json.dumps({"status": str(e)})
+
+
+def delete_staff(login: str, restaurant: str):
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute('DELETE FROM staff WHERE login = %s AND restaurant = %s', [login, restaurant])
+            if cursor.rowcount == 1:
+                return json.dumps({"status": "Success"})
+            return json.dumps({"status": "Fail"})
+    except Exception as e:
+        return json.dumps({"status": str(e)})
+
+
+def create_meal(name:str, description: str, image: str, price: int, category: str, available: bool, restaurant: str):
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute('INSERT INTO meal VALUES (%s, %s, %s, %s, %s, %s, %s)',[name, description, image[-1], price, category, available, restaurant])
+            if cursor.rowcount == 1:
+                return json.dumps({"status": "Success"})
+            return json.dumps({"status": "Fail"})
+    except Exception as e:
+        return json.dumps({"status": str(e)})

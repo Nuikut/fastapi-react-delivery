@@ -8,7 +8,7 @@ export default function RestaurantsList() {
     useEffect(() => {
         async function loadRestaurants() {
             const result = await getRestaurants()
-            setRestaurants(result)
+            setRestaurants(result['restaurants'])
         }
         loadRestaurants();
     }, [])
