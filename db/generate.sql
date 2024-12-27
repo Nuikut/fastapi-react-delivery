@@ -28,7 +28,7 @@ CREATE TABLE orders(
 	active BOOLEAN,
 	rating SMALLINT,
 	client VARCHAR(20) REFERENCES client(login) ON UPDATE CASCADE,
-	staff VARCHAR (20) REFERENCES staff(login),
+	staff VARCHAR (20) REFERENCES staff(login) ON UPDATE CASCADE,
 	restaurant VARCHAR(50) REFERENCES restaurant(name)
 );
 

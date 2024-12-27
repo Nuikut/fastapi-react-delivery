@@ -44,15 +44,14 @@ export default function RestaurantPage() {
         setIsMenuOpen(prevState => !prevState);
     };
 
-    // Состояние для хранения адреса, на который наведены
     const [hoveredRestaurant, setHoveredRestaurant] = useState(null);
 
     const handleMouseEnter = (restaurant) => {
-        setHoveredRestaurant(restaurant); // Показываем подробности при наведении
+        setHoveredRestaurant(restaurant);
     };
 
     const handleMouseLeave = () => {
-        setHoveredRestaurant(null); // Прячем подробности, когда курсор уходит
+        setHoveredRestaurant(null);
     };
 
     const RestaurantList = () => {
@@ -112,7 +111,7 @@ export default function RestaurantPage() {
 
             {!getUserRestaurant() && !isMenuOpen &&
                 <div className="restaurantButton" style={{ alignItems: 'center', justifyContent: "center", height: "70vh", display: "flex", flexDirection: "column" }}>
-                    <p style={{ fontFamily: "Arial sans-serif", fontSize: 32 }}>Мы уже готовы доставить Вашу еду, осталось совсем чуть-чуть</p>
+                    <p style={{ fontFamily: "Arial sans-serif", fontSize: 32 }}>Мы уже готовы доставить Вашу еду, осталось совсем чуть-чуть🤏</p>
                     <button style={{ height: "70px" }} onClick={toggleMenu}>{"Выберите ресторан"}</button>
                 </div>
             }

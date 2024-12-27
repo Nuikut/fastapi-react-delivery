@@ -1,18 +1,18 @@
 const API_URL = process.env.REACT_APP_API_URL;
 
-export async function updateStaff(login, password, restaurant) {
+export async function updateStaff(login, newLogin, password, restaurant) {
 
     if (!login) {
         return {"status": "No login"};
     }
-    const response = await fetch(`${API_URL}/manager/staff`, {
+    const response = await fetch(`${API_URL}/api/manager/staff`, {
         method: 'PATCH',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('manager_token')}`,
             'accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({login: login, password: password, restaurant: restaurant})
+        body: JSON.stringify({login: login, newLogin:newLogin, password: password, restaurant: restaurant})
     })
     const data = await response.json()
     console.log(data)
@@ -23,7 +23,7 @@ export async function deleteStaff(login, restaurant) {
     if (!login) {
         return {"status": "No login"};
     }
-    const response = await fetch(`${API_URL}/manager/staff`, {
+    const response = await fetch(`${API_URL}/api/manager/staff`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('manager_token')}`,
@@ -40,7 +40,7 @@ export async function createMeal(name, description, price, category, available =
     if (!name || !description || !price || !category) {
         return {"status": "Not enough data"};
     }
-    const response = await fetch(`${API_URL}/manager/staff`, {
+    const response = await fetch(`${API_URL}/api/manager/meal`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('manager_token')}`,

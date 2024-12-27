@@ -51,7 +51,7 @@ export default function Manager() {
     }
 
     const handleUpdateStaff = async (login, newLogin, password) => {
-        const response = await updateStaff(login, newLogin, password);
+        const response = await updateStaff(login, newLogin, password, localStorage.getItem('manager_restaurant'));
         drop();
         if (response.status === "Success")
             setRefresh(!refresh)
@@ -143,10 +143,10 @@ export default function Manager() {
                         onChange={(e) => setMealPrice(e.target.value)}
                     />
                     <input
-                        type="Категория"
+                        type="text"
                         placeholder="Категория"
                         value={mealCategory}
-                        onChange={(e) => setMealPrice(e.target.value)}
+                        onChange={(e) => setMealCategory(e.target.value)}
                     />
                     <button className="add-staff" onClick={handleAddMeal}>Добавить блюдо</button>
                 </div>

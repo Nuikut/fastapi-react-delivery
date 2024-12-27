@@ -11,9 +11,6 @@ export default function Header({name = "", children}) {
             <nav className="nav">
                 <ul>
                     <li>
-                        <Link to="/">Главная</Link>
-                    </li>
-                    <li>
                         <Link to="/menu">Меню</Link>
                     </li>
                     <li>

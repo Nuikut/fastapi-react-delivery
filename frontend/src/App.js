@@ -20,7 +20,6 @@ function App() {
                 <Route path="/signup" element={<SignUp/>}/>
                 <Route path="/profile" element={<Profile/>}/>
                 <Route path="/about" element={<About/>}/>
-                <Route path="/main" element={<Main/>}/>
                 <Route path="/menu" element={<Main/>}/>
                 <Route path="/cart" element={<Cart/>}/>
                 <Route path="/staff" element={<Staff/>}/>
@@ -29,7 +28,7 @@ function App() {
                 <Route path="/manager/login" element={<Login type={"manager"}/>}/>
                 <Route path="/root" element={<Admin/>}/>
                 <Route path="/root/login" element={<AdminLogin/>}/>
-                <Route path="*" element={<Navigate to={'/main'}/> }></Route>
+                <Route path="*" element={<Navigate to={'/menu'}/> }></Route>
         </Routes>
       </div>
   );

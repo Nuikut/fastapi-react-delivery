@@ -5,7 +5,8 @@ from db import validate_user, create_user, validate_manager, get_menu, get_resta
     alter_restaurant, \
     get_staff_active_orders, get_staff_random, update_user, rate_order, order_ready, get_staff_history_orders, \
     change_staff, delete_staff, create_meal
-from schemas import Client, createStaff, Staff, Order, Admin, login, Restaurant, restaurant, newClient, fullMeal
+from schemas import Client, createStaff, Staff, Order, Admin, login, Restaurant, restaurant, newClient, fullMeal, \
+    updateStaff
 
 login_router = APIRouter(
     prefix="/auth",
@@ -108,11 +109,11 @@ async def create_staff(staff: createStaff):
 
 @admin_router.post("/restaurant")
 async def add_restaurant(restaurant: Restaurant):
-    return create_restaurant(address=restaurant.address, category=restaurant.category, login=restaurant.manager_login, password=restaurant.manager_password)
+    return create_restaurant(name=restaurant.name, address=restaurant.address, category=restaurant.category, login=restaurant.manager_login, password=restaurant.manager_password)
 
 @admin_router.delete("/restaurant")
 async def delete_restaurant(restaurant: restaurant):
-    return alter_restaurant(restaurant.address)
+    return alter_restaurant(restaurant.name)
 
 
 staff_router = APIRouter(
@@ -139,8 +140,8 @@ manager_router = APIRouter(
 )
 
 @manager_router.patch("/staff")
-async def changeStaff(staff: createStaff):
-    return change_staff(staff.login, staff.password, staff.restaurant)
+async def changeStaff(staff: updateStaff):
+    return change_staff(staff.login, staff.newLogin, staff.password, staff.restaurant)
 
 @manager_router.delete("/staff")
 async def deleteStaff(staff: Staff):

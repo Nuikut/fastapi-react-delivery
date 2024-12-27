@@ -5,6 +5,7 @@ from time import time
 from jwt import DecodeError
 import psycopg
 from dotenv import load_dotenv, find_dotenv
+
 from auth.auth import encode_jwt
 import bcrypt
 
@@ -275,21 +276,21 @@ def get_staff_history_orders(staff: str):
         return json.dumps({'order': str(e)})
 
 
-def create_restaurant(address: str, category: str, login: str, password: str):
+def create_restaurant(name: str, address: str, category: str, login: str, password: str):
     with conn.cursor() as cursor:
         try:
-            if cursor.execute('INSERT INTO restaurant VALUES (%s, %s, %s, %s)',
-                              [address, category, login,
+            if cursor.execute('INSERT INTO restaurant VALUES (%s, %s, %s, %s, %s)',
+                              [name, address, category, login,
                                bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()]).rowcount:
                 return json.dumps({"status": "Success"})
         except BaseException as e:
             return json.dumps({"status": str(e)})
 
 
-def alter_restaurant(address: str) -> str:
+def alter_restaurant(name: str) -> str:
     with conn.cursor() as cursor:
         try:
-            if cursor.execute('DELETE FROM restaurant WHERE address = %s', [address]).rowcount:
+            if cursor.execute('DELETE FROM restaurant WHERE name = %s', [name]).rowcount:
                 return json.dumps({"status": "Success"})
         except psycopg.errors.ForeignKeyViolation:
             return json.dumps({"status": "Foreign key violation"})  # TODO: frontend popup
@@ -311,10 +312,10 @@ def order_ready(id: str):
             return json.dumps({"status": str(e)})
 
 
-def change_staff(login: str, password: str, restaurant: str) -> str:
+def change_staff(login: str, newLogin: str,  password: str, restaurant: str) -> str:
     try:
         with conn.cursor() as cursor:
-            cursor.execute('UPDATE staff SET active = FALSE WHERE login = %s AND password = %s AND restaurant = %s', [login, password, restaurant])
+            cursor.execute('UPDATE staff SET login = %s, password = %s WHERE login = %s AND restaurant = %s', [newLogin, password, login, restaurant])
             if cursor.rowcount == 1:
                 return json.dumps({"status": "Success"})
             else:
@@ -335,7 +336,6 @@ def delete_staff(login: str, restaurant: str):
 
 
 def create_meal(name:str, description: str, price: int, category: str, available: bool, restaurant: str):
-    image = None
     try:
         with conn.cursor() as cursor:
             cursor.execute('INSERT INTO meal VALUES (%s, %s, %s, %s, %s, %s)',[name, description, price, category, available, restaurant])

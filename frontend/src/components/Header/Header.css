@@ -19,6 +19,7 @@
 .nav ul {
     display: flex;
     list-style: none;
+    margin-left: 15px;
     gap: 20px;
 }
 

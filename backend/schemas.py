@@ -83,6 +83,24 @@ class createStaff(BaseModel):
         }
     }
 
+class updateStaff(BaseModel):
+    login: str
+    newLogin:str
+    password: str
+    restaurant: str
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "login": "manager",
+                    "password": "manager",
+                    "restaurant": "restaurant",
+                }
+            ]
+        }
+    }
+
 class login(BaseModel):
     login: str
 
@@ -112,6 +130,7 @@ class Order(BaseModel):
     }
 
 class Restaurant(BaseModel):
+    name:str
     address: str
     category: str
     manager_login: str

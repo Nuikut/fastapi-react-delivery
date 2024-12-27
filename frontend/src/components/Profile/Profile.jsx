@@ -98,7 +98,7 @@ export default function Profile() {
             }>
             </Header>
             <div className="Bio" style={{marginTop: "100px", fontSize: "20px"}}>
-                <p style={{textAlign: "right", marginRight: "20px"}}>Привет {username}!</p>
+                <p style={{textAlign: "right", marginRight: "20px"}}>Привет {username}!👋</p>
                 <h3 style={{textAlign: "center"}}>Изменить данные</h3>
                 {error && <p style={{textAlign: "center"}}>{error}</p>}
                 <form onSubmit={handleUpdateInfo}>
@@ -181,7 +181,7 @@ export default function Profile() {
                         <Orders orders={orders}></Orders>
                     </div>
                 }
-                <button className="collapsibleButton" onClick={() => (buttonHandle())}>Прошлые заказы</button>
+                <button className="collapsibleButton" onClick={() => (buttonHandle())}>Прошлые заказы ↓</button>
                 {open && <Orders orders={history}/>}
             </div>
         </div>

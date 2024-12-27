@@ -125,7 +125,7 @@ export default function Cart() {
                 </p>
                 <div className="restaurantButton">
                     <button style={{marginBottom: "10px"}} onClick={order}>
-                        Оплатить
+                        Оплатить😋
                     </button>
                 </div>
             </footer>

@@ -84,7 +84,7 @@ export default function Staff() {
             <div style={{marginTop:"50px"}}>
                 {orders && orders.length > 0 ? <Orders orders={orders} staff={true} onOrderUpdate={updateOrders}/> : null}
             </div>
-            <button className="collapsibleButton" style={{background:"#0077FF54", color:"black"}} onClick={() => (buttonHandle())}>Прошлые заказы</button>
+            <button className="collapsibleButton" style={{background:"#0077FF54", color:"black"}} onClick={() => (buttonHandle())}>Прошлые заказы ↓</button>
             {open && <Orders orders={history} staff={true}/>}
         </div>
     )
