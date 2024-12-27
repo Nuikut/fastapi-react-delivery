@@ -17,7 +17,7 @@ export default function Menu({onSendData}) {
     useEffect(() => {
         fetchMenu(restaurant);
         onSendData(cart);
-    }, [restaurant, cart, onSendData]);
+    }, [restaurant]);
 
 
     const addToCart = (meal) => {
