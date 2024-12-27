@@ -137,7 +137,6 @@ class restaurant(BaseModel):
 class fullMeal(BaseModel):
     name: str
     description: str
-    image: str
     price: int
     category: str
     available: bool

@@ -1,0 +1,29 @@
+.manager-forms {
+    display: flex;
+    flex-direction: row;
+    gap: 100px;
+    max-width: 300px;
+    margin-left: 30vw;
+    max-height: 500px;
+    height: 100%;
+}
+
+.add-staff {
+    width: 100%;
+    max-width: 400px;
+    background: #AF4C7EFF;
+    border-radius: 4px;
+    border: 1px solid #AF4C7E;
+    color: white;
+    cursor: pointer;
+}
+
+.add-staff-form,
+.update-staff-form,
+.add-meal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+}
+

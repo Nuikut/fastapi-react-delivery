@@ -1,7 +1,7 @@
 import {useState} from 'react';
-import {loginUser} from "../api/auth";
-import {loginStaff} from "../api/auth";
-import {loginManager} from "../api/auth";
+import {loginUser} from "../../api/auth";
+import {loginStaff} from "../../api/auth";
+import {loginManager} from "../../api/auth";
 import {Link, useNavigate} from "react-router-dom";
 import './Login.css'
 
@@ -81,7 +81,13 @@ export default function Login({type = "user"}) {
                     />
                 }
                 </div>
-                <button className="loginButton" type="submit">Войти</button>
+                {type === "staff" &&
+                    <button className="loginButton" style={{background:"#0077FF54"}} type="submit">Войти</button>}
+                {type === "manager" &&
+                    <button className="loginButton" style={{background:"#AF4C7EFF"}} type="submit">Войти</button>}
+                {type === "user" &&
+                    <button className="loginButton" type="submit">Войти</button>}
+
                 {error && <div style={{color: 'red', textAlign:"center"}}>{error}</div>}
                 <div className="hints">
                     {type === "user" && (

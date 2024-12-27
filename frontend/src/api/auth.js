@@ -107,6 +107,7 @@ export async function loginManager(login, password, restaurant) {
 
         if (response.ok) {
             localStorage.setItem('manager_token', data);
+            localStorage.setItem('manager_restaurant', restaurant);
         }
 
         return data;

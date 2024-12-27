@@ -116,7 +116,7 @@ async def delete_restaurant(restaurant: restaurant):
 
 
 staff_router = APIRouter(
-    prefix="/staff",
+    prefix="/api/staff",
     tags=["staff info"]
 )
 
@@ -134,7 +134,7 @@ async def set_order_ready(id: str = None):
 
 
 manager_router = APIRouter(
-    prefix="/manager",
+    prefix="/api/manager",
     tags=["manager info"]
 )
 
@@ -148,4 +148,4 @@ async def deleteStaff(staff: Staff):
 
 @manager_router.post("/meal")
 async def createMeal(meal: fullMeal):
-    return create_meal(*meal)
+    return create_meal(meal.name, meal.description, meal.price, meal.category, meal.available, meal.restaurant)

@@ -1,6 +1,5 @@
 import {getMenu} from "../api/restaurants";
 import {useEffect, useState} from "react";
-import LoadingScreen from "./LoadingScreen/LoadingScreen";
 import MenuCard from "./MenuCard";
 
 
@@ -30,7 +29,7 @@ export default function Menu({onSendData}) {
         if (existingItem)
             existingItem.quantity += 1;
         else
-           updatedCart.push({...meal, quantity: 1});
+            updatedCart.push({...meal, quantity: 1});
 
         setCart(updatedCart);
         onSendData(updatedCart);
@@ -45,9 +44,6 @@ export default function Menu({onSendData}) {
                     <MenuCard meal={meal} func={addToCart} action="+"></MenuCard>
                 )))}
             </div>
-            {!restaurant &&
-                <LoadingScreen child={'Выберите ресторан'}></LoadingScreen>
-            }
         </div>
     );
 }

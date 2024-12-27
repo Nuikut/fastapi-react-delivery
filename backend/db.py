@@ -1,7 +1,6 @@
 import json
 from datetime import datetime
 from os import environ, getenv
-from pathlib import Path
 from time import time
 from jwt import DecodeError
 import psycopg
@@ -36,7 +35,7 @@ def create_user(login: str, password: str) -> str:
 def validate_user(login: str, password: str, type: str) -> str:
     try:
         with conn.cursor() as cursor:
-            cursor.execute(f'SELECT login, password FROM {type} WHERE login = %s', [login])
+            cursor.execute(f'SELECT login, password FROM {type} WHERE login = %s AND active = TRUE', [login])
             data = cursor.fetchone()
             if data and bcrypt.checkpw(password=password.encode(), hashed_password=data['password'].encode()):
                 return json.dumps({"access_token": encode_jwt(data['login'])})
@@ -68,7 +67,7 @@ def validate_manager(login: str, password: str, restaurant: str) -> str:
     try:
         with conn.cursor() as cursor:
             cursor.execute(
-                f'SELECT manager_login, manager_password FROM restaurant WHERE manager_login = %s AND address = %s',
+                f'SELECT manager_login, manager_password FROM restaurant WHERE manager_login = %s AND name = %s',
                 [login, restaurant])
             data = cursor.fetchone()
             if data and bcrypt.checkpw(password=password.encode(), hashed_password=data['manager_password'].encode()):
@@ -90,7 +89,7 @@ def get_menu(restaurant: str) -> str:
 def get_restaurants() -> str:
     try:
         with conn.cursor() as cursor:
-            cursor.execute('SELECT address, category FROM restaurant')
+            cursor.execute('SELECT name, address, category FROM restaurant')
             return json.dumps({"restaurants": cursor.fetchall()})
     except Exception as e:
         return json.dumps({"restaurants": str(e)})
@@ -120,6 +119,7 @@ def add_meals_to_order(name: str, quantity: int, order_id: int) -> bool:
 
 
 def make_order(total_price: int, client: str, staff: str, restaurant: str, cart: list) -> str:
+    print(total_price, datetime.today().strftime('%Y-%m-%d %H:%M'), client, staff, restaurant, cart)
     with conn.cursor() as cursor:
         with conn.transaction():  # to prevent transaction errors stopping other transactions
             try:
@@ -207,7 +207,7 @@ def get_staff() -> str:
 def get_staff_random(restaurant: str) -> str:
     try:
         with conn.cursor() as cursor:
-            staff = list(cursor.execute('SELECT login FROM staff WHERE restaurant = %s ORDER BY RANDOM() LIMIT 1',
+            staff = list(cursor.execute('SELECT login FROM staff WHERE restaurant = %s AND active = TRUE ORDER BY RANDOM() LIMIT 1',
                                         [restaurant]).fetchall())
             if not staff:
                 return json.dumps({"staff": "No staff"})
@@ -334,10 +334,11 @@ def delete_staff(login: str, restaurant: str):
         return json.dumps({"status": str(e)})
 
 
-def create_meal(name:str, description: str, image: str, price: int, category: str, available: bool, restaurant: str):
+def create_meal(name:str, description: str, price: int, category: str, available: bool, restaurant: str):
+    image = None
     try:
         with conn.cursor() as cursor:
-            cursor.execute('INSERT INTO meal VALUES (%s, %s, %s, %s, %s, %s, %s)',[name, description, image[-1], price, category, available, restaurant])
+            cursor.execute('INSERT INTO meal VALUES (%s, %s, %s, %s, %s, %s)',[name, description, price, category, available, restaurant])
             if cursor.rowcount == 1:
                 return json.dumps({"status": "Success"})
             return json.dumps({"status": "Fail"})

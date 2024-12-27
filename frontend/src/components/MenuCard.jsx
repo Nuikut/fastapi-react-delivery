@@ -1,7 +1,7 @@
 export default function MenuCard({meal, func, action}) {
     return (
         <div className="menu-card">
-            <img src={meal.image} alt={meal.name} className="menu-card-image"/>
+
             <div className="menu-card-content">
                 <h3 className="menu-card-title">{meal.name}</h3>
                 <p className="menu-card-description">{meal.description}</p>

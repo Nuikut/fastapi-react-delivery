@@ -4,7 +4,7 @@ import {rateOrder} from "../../api/cart";
 import {setOrderReady} from "../../api/staff";
 
 export default function Orders({orders, staff = false, onOrderUpdate}) {
-    const [rating, setRating] = useState(0);
+    const [rating, setRating] = useState(5);
 
     const rate = (id) => {
         const response = rateOrder(id, rating)
@@ -30,6 +30,7 @@ export default function Orders({orders, staff = false, onOrderUpdate}) {
                             <p className="orderAddress"> {order.restaurant}</p>
                             <p className="orderTime">в {order.time}</p>
                             <p className="orderRating">{order.rating}</p>
+                            {!staff && <p className="orderStaff">{order.staff}</p>}
                         </div>
                         <div style={{width: '10%'}}>
                             <p>Блюда:</p>
@@ -37,7 +38,7 @@ export default function Orders({orders, staff = false, onOrderUpdate}) {
                                 <p>{item[0]} x{item[1]} </p>
                             ))}
                         </div>
-                        {!order.rating || staff &&
+                        {((!order.active && order.rating < 1 && !staff) || (staff && order.active)) &&
                             <div className="restaurantButton" style={{marginLeft: "auto", marginRight: "5px"}}>
 
                                 <div style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
@@ -45,6 +46,7 @@ export default function Orders({orders, staff = false, onOrderUpdate}) {
                                         type="number"
                                         min="1"
                                         max="5"
+                                        defaultValue="5"
                                         value={rating}
                                         onChange={(e) => setRating(e.target.value)}
                                         style={{
@@ -54,9 +56,10 @@ export default function Orders({orders, staff = false, onOrderUpdate}) {
                                             border: "1px solid #ddd",
                                             borderBlock: "none",
                                             padding: "5px",
+                                            marginTop:"65px"
                                         }}
                                     />}
-                                    <button onClick={() => !staff ? rate(order.id) : setReady(order.id)}>{!staff ? "Оценить" : "Готов"}</button>
+                                    <button onClick={() => !staff ? rate(order.id) : setReady(order.id)} style={(staff) ? {background:"#0077FF54", border:"white", marginTop:"35px"} : {marginTop:"65px"}}>{!staff ? "Оценить" : "Готов"}</button>
                                 </div>
                             </div>
                         }

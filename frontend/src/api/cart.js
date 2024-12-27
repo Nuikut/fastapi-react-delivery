@@ -39,6 +39,7 @@ export async function getRandomStaff(restaurant) {
 }
 
 export async function placeOrder(price, username, staff, restaurant, cart) {
+    console.log(price, username, staff, restaurant, cart);
     const response = await fetch(`${API_URL}/ordering/order`, {
         method: 'POST',
         headers: {

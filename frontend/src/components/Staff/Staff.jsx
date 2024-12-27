@@ -52,12 +52,10 @@ export default function Staff() {
 
             if (username) {
                 const status = await getActiveStaffOrders(username);
-                console.log(status);
                 if (status['order'] !== 'Fail') {
                     setOrders(status['order']);
                 }
                 const data = await getHistoryOrders(username);
-                console.log(data['order']);
                 if (data['order'] !== 'Fail') {
                     setHistory(data['order']);
                 }
@@ -87,7 +85,7 @@ export default function Staff() {
                 {orders && orders.length > 0 ? <Orders orders={orders} staff={true} onOrderUpdate={updateOrders}/> : null}
             </div>
             <button className="collapsibleButton" style={{background:"#0077FF54", color:"black"}} onClick={() => (buttonHandle())}>Прошлые заказы</button>
-            {open && <Orders orders={history}/>}
+            {open && <Orders orders={history} staff={true}/>}
         </div>
     )
 };

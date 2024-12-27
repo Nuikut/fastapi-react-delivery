@@ -17,10 +17,10 @@ export default function Header({name = "", children}) {
                         <Link to="/menu">Меню</Link>
                     </li>
                     <li>
-                        <Link to="/about">О нас</Link>
+                        <Link to="/about#about">О нас</Link>
                     </li>
                     <li>
-                        <Link to="/contact">Контакты</Link>
+                        <Link to="/about#contact">Контакты</Link>
                     </li>
                 </ul>
             </nav>
@@ -28,15 +28,6 @@ export default function Header({name = "", children}) {
                 {children}
             </nav>
             <div className="search">
-                {/*<form onSubmit={handleSearchSubmit}>*/}
-                {/*    <input*/}
-                {/*        type="text"*/}
-                {/*        value={searchQuery}*/}
-                {/*        onChange={handleSearchChange}*/}
-                {/*        placeholder="Поиск по блюдам..."*/}
-                {/*    />*/}
-                {/*    <button type="submit">Поиск</button>*/}
-                {/*</form>*/}
             </div>
         </header>
     )

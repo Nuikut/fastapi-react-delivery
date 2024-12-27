@@ -14,7 +14,9 @@
 
 .restaurantButton {
     display: flex;
+    justify-content: center;
     align-items: center;
+    height: 100%;
 }
 
 .restaurantButton span {
@@ -24,7 +26,7 @@
 }
 
 .restaurantButton button {
-    margin: 0 25px;
+    margin: 0 auto;
     background-color: #ff7f50;
     border: 2px solid #ff6a33;
     border-radius: 30px;
@@ -62,6 +64,7 @@
 }
 
 .restaurantListItem {
+    position: relative;
     list-style-type: none;
     padding: 0;
     margin: 0;
@@ -104,20 +107,15 @@
     align-items: center;
 }
 
-.menu-card-image{
-    position: absolute;
-    top: 20px;
-}
-
 .menu-card-title {
     position: absolute;
-    top: 60px;
+    top: 10px;
     overflow: hidden;
 }
 
 .menu-card-description {
     position: absolute;
-    bottom: 40px;
+    top: 70px;
     text-align: justify;
     overflow: clip;
     height: 83px;
@@ -130,8 +128,8 @@
 
 .menu-card-button {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 20px;
+    right: 20px;
     border: 3px solid #fd7e4f;
     background: white;
     box-sizing: border-box;
@@ -155,13 +153,13 @@
     text-align: right;
     font-weight: bold;
     position: absolute;
-    bottom: 18px;
-    right: 60px;
+    bottom: 28px;
+    right: 80px;
 }
 
 .menu-card-category {
     position: absolute;
-    bottom: 18px;
+    bottom: 28px;
 
 }
 
@@ -232,4 +230,24 @@
 
 .cookie-btn:hover {
     background-color: #ff6a33;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    max-width: 400px;
+    font-size: 14px;
+    top: -60%;
+    right: 107%;
+    margin-left: 10px;
+    white-space: nowrap;
+    box-sizing: border-box;
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
 }

@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import Header from "./Header/Header";
 import MenuCard from "./MenuCard";
 import {ToastContainer, toast} from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+
 import {getRandomStaff, placeOrder} from "../api/cart";
 import {jwtDecode} from 'jwt-decode'
 import {useNavigate} from "react-router-dom";
@@ -105,8 +105,8 @@ export default function Cart() {
     return (
         <div className="Cart" style={{display: "flex", flexDirection: "column", minHeight: "100vh"}}>
             <Header/>
+            <ToastContainer style={{display:"none"}}/>
             <div className="menu" style={{flexGrow: 1, marginTop:"100px"}}>{mapCart()}</div>
-            <ToastContainer />
             <footer
                 style={{
                     marginTop: "auto",

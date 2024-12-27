@@ -46,7 +46,7 @@ export default function AdminLogin() {
                     required
                 />
                 </div>
-                <button className="loginButton" type="submit">Log in</button>
+                <button className="loginButton" type="submit" style={{background:"#700523"}}>Log in</button>
                 {error && <div style={{color: 'red'}}>{error}</div>}
             </form>
         </div>

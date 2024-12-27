@@ -20,11 +20,11 @@ export async function loginAdmin(login, password) {
 }
 
 
-export async function getStaff() {
+export async function getStaff(token = localStorage.getItem('admin_token')) {
     const response = await fetch(`${API_URL}/admin/staff`, {
         method: 'GET',
         headers: {
-            'Authorization': `Bearer ${localStorage.getItem('admin_token')}`,
+            'Authorization': `Bearer ${token}`,
             'accept': 'application/json',
             'Content-Type': 'application/json'
         },

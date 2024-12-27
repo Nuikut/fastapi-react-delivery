@@ -2,17 +2,14 @@ import {useEffect, useState} from "react";
 import {validateToken} from "../../api/auth";
 import {jwtDecode} from "jwt-decode";
 import {useNavigate} from "react-router-dom";
-import {getStaff} from "../../api/admin";
 import './Admin.css';
 import StaffList from "../StaffList/StaffList";
 import RestaurantsList from "../RestaurantsList/RestaurantsList";
-import {getRestaurants} from "../../api/restaurants";
 import CreateStaff from "../CreateStaff/CreateStaff";
 import CreateRestaurant from "../CreateRestaurant/CreateRestaurant";
 
 export default function Admin() {
     const navigate = useNavigate();
-    const [staffArray, setStaffArray] = useState([]);
 
     useEffect(() => {
         const checkToken = async () => {

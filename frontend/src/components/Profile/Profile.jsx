@@ -52,7 +52,6 @@ export default function Profile() {
         const data = await getActiveOrders(username);
         setOrders(data['order']);
         const response = await getHistoryOrders(username);
-        console.log(response['order']);
         setHistory(response['order']);
     }
 
@@ -71,19 +70,17 @@ export default function Profile() {
             setError('Пароли не совпадают')
             return;
         }
-        else if (!newUsername || newUsername.length < 1){
-            setError('Неверное имя')
-        }
+
 
         const result = await updateUserInfo(localStorage.getItem('access_token'), username, newPassword, newUsername);
         if (result === 'Success') {
+            setError('Успешно изменено, изменения вступят в силу после логина');
             setUsername(newUsername || username);
             setNewUsername('');
             setNewPassword('');
             setPasswordConfirmation('');
-            setError('Успешно изменено');
-
         }
+
         else if (result === 'Username taken') {
             setError('Такое имя уже занято')
         }
@@ -105,7 +102,7 @@ export default function Profile() {
                 <h3 style={{textAlign: "center"}}>Изменить данные</h3>
                 {error && <p style={{textAlign: "center"}}>{error}</p>}
                 <form onSubmit={handleUpdateInfo}>
-                    <div style={{marginLeft: "20px", maxWidth: "600px", marginBottom: "15px"}}>
+                    <div style={{marginLeft: "20px", maxWidth: "300px", marginBottom: "15px"}}>
                         <label htmlFor="newUsername" style={{display: 'block', width: '100%'}}>Новый логин:</label>
                         <input
                             type="text"
@@ -122,7 +119,7 @@ export default function Profile() {
                             }}
                         />
                     </div>
-                    <div style={{marginLeft: "20px", maxWidth: "600px", marginBottom: "15px"}}>
+                    <div style={{marginLeft: "20px", maxWidth: "300px", marginBottom: "15px"}}>
                         <label htmlFor="newPassword" style={{display: 'block', width: '100%'}}>Новый пароль:</label>
                         <input
                             type="password"
@@ -139,7 +136,7 @@ export default function Profile() {
                             }}
                         />
                     </div>
-                    <div style={{marginLeft: "20px", maxWidth: "600px", marginBottom: "15px"}}>
+                    <div style={{marginLeft: "20px", maxWidth: "300px", marginBottom: "15px"}}>
                         <label htmlFor="passwordConfirmation" style={{display: 'block', width: '100%'}}>Подтверждение
                             пароля:</label>
                         <input
